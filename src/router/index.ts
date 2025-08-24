@@ -7,6 +7,14 @@ const router = createRouter({
   },
   routes: [
     {
+      path: '/',
+      name: 'Ecommerce',
+      component: () => import('../views/Ecommerce.vue'),
+      meta: {
+        title: 'eCommerce Dashboard',
+      },
+    },
+    {
       path: '/calendar',
       name: 'Calendar',
       component: () => import('../views/Others/Calendar.vue'),
@@ -127,7 +135,7 @@ const router = createRouter({
     {
       path: '/signup',
       name: 'Signup',
-      component: () => import('../views/Auth/SignUp.vue'),
+      component: () => import('../views/Auth/Signup.vue'),
       meta: {
         title: 'Signup',
       },
