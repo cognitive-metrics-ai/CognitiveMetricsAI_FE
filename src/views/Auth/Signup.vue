@@ -1,4 +1,3 @@
-<!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <template>
   <FullScreenLayout>
     <div class="relative p-6 bg-white z-1 dark:bg-gray-900 sm:p-0">
@@ -308,7 +307,6 @@ import { auth } from '@/firebase.js'
 import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 import { updateProfile } from 'firebase/auth'
 
-
 const firstName = ref('')
 const lastName = ref('')
 const email = ref('')
@@ -337,7 +335,7 @@ const handleSubmit = async () => {
       displayName: `${firstName.value} ${lastName.value}`
     })
     router.push('/')
-  } catch (error) {
+  } catch (error: unknown) {
     if (error instanceof Error) {
       errorMsg.value = error.message
     } else {
@@ -348,7 +346,6 @@ const handleSubmit = async () => {
   }
 }
 
-
 const handleGoogleSignup = async () => {
   errorMsg.value = ''
   loading.value = true
@@ -357,7 +354,7 @@ const handleGoogleSignup = async () => {
     await signInWithPopup(auth, provider)
     // Optionally update profile or handle user info here
     router.push('/')
-  } catch (error) {
+  } catch (error: unknown) {
     if (error instanceof Error) {
       errorMsg.value = error.message
     } else {
