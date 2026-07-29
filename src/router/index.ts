@@ -1,4 +1,30 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import { auth } from '@/firebase.js'
+import { onAuthStateChanged } from 'firebase/auth'
+
+let currentUser: any = null
+let isAuthResolved = false
+
+const getCurrentUser = () => {
+  return new Promise((resolve) => {
+    if (isAuthResolved) {
+      resolve(currentUser)
+      return
+    }
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      currentUser = user
+      isAuthResolved = true
+      unsubscribe()
+      resolve(user)
+    })
+  })
+}
+
+// Re-evaluate on subsequent auth state changes (e.g. sign in / sign out)
+onAuthStateChanged(auth, (user) => {
+  currentUser = user
+  isAuthResolved = true
+})
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -8,10 +34,18 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'PerformanceDashboard',
-      component: () => import('../views/Performance/OverviewDashboard.vue'),
+      name: 'Home',
+      component: () => import('../views/MarketingLanding.vue'),
       meta: {
-        title: 'Cognitive Performance Center',
+        title: 'Cognitive Metrics AI — Next-Gen Performance Platform',
+      },
+    },
+    {
+      path: '/marketing',
+      name: 'Marketing',
+      component: () => import('../views/MarketingLanding.vue'),
+      meta: {
+        title: 'Cognitive Metrics AI — Next-Gen Performance Platform',
       },
     },
     {
@@ -20,6 +54,7 @@ const router = createRouter({
       component: () => import('../views/Performance/OverviewDashboard.vue'),
       meta: {
         title: 'Cognitive Performance Center',
+        requiresAuth: true,
       },
     },
     {
@@ -28,6 +63,7 @@ const router = createRouter({
       component: () => import('../views/Performance/EmployeeDetail.vue'),
       meta: {
         title: 'Employee Cognitive Profile',
+        requiresAuth: true,
       },
     },
     {
@@ -36,6 +72,7 @@ const router = createRouter({
       component: () => import('../views/Performance/ReviewGenerator.vue'),
       meta: {
         title: 'AI Review Generator',
+        requiresAuth: true,
       },
     },
     {
@@ -44,6 +81,7 @@ const router = createRouter({
       component: () => import('../views/Others/Calendar.vue'),
       meta: {
         title: 'Calendar',
+        requiresAuth: true,
       },
     },
     {
@@ -52,6 +90,7 @@ const router = createRouter({
       component: () => import('../views/Others/UserProfile.vue'),
       meta: {
         title: 'Profile',
+        requiresAuth: true,
       },
     },
     {
@@ -60,6 +99,7 @@ const router = createRouter({
       component: () => import('../views/Forms/FormElements.vue'),
       meta: {
         title: 'Form Elements',
+        requiresAuth: true,
       },
     },
     {
@@ -68,17 +108,24 @@ const router = createRouter({
       component: () => import('../views/Tables/BasicTables.vue'),
       meta: {
         title: 'Basic Tables',
+        requiresAuth: true,
       },
     },
     {
       path: '/line-chart',
       name: 'Line Chart',
       component: () => import('../views/Chart/LineChart/LineChart.vue'),
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
       path: '/bar-chart',
       name: 'Bar Chart',
       component: () => import('../views/Chart/BarChart/BarChart.vue'),
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
       path: '/alerts',
@@ -86,6 +133,7 @@ const router = createRouter({
       component: () => import('../views/UiElements/Alerts.vue'),
       meta: {
         title: 'Alerts',
+        requiresAuth: true,
       },
     },
     {
@@ -94,6 +142,7 @@ const router = createRouter({
       component: () => import('../views/UiElements/Avatars.vue'),
       meta: {
         title: 'Avatars',
+        requiresAuth: true,
       },
     },
     {
@@ -102,24 +151,25 @@ const router = createRouter({
       component: () => import('../views/UiElements/Badges.vue'),
       meta: {
         title: 'Badge',
+        requiresAuth: true,
       },
     },
-
     {
       path: '/buttons',
       name: 'Buttons',
       component: () => import('../views/UiElements/Buttons.vue'),
       meta: {
         title: 'Buttons',
+        requiresAuth: true,
       },
     },
-
     {
       path: '/images',
       name: 'Images',
       component: () => import('../views/UiElements/Images.vue'),
       meta: {
         title: 'Images',
+        requiresAuth: true,
       },
     },
     {
@@ -128,6 +178,7 @@ const router = createRouter({
       component: () => import('../views/UiElements/Videos.vue'),
       meta: {
         title: 'Videos',
+        requiresAuth: true,
       },
     },
     {
@@ -136,9 +187,9 @@ const router = createRouter({
       component: () => import('../views/Pages/BlankPage.vue'),
       meta: {
         title: 'Blank',
+        requiresAuth: true,
       },
     },
-
     {
       path: '/error-404',
       name: '404 Error',
@@ -147,7 +198,6 @@ const router = createRouter({
         title: '404 Error',
       },
     },
-
     {
       path: '/signin',
       name: 'Signin',
@@ -167,9 +217,25 @@ const router = createRouter({
   ],
 })
 
-export default router
+router.beforeEach(async (to, from, next) => {
+  const user = await getCurrentUser()
+  if (to.meta.title) {
+    document.title = `${to.meta.title} | Cognitive Metrics AI`
+  }
 
-router.beforeEach((to, from, next) => {
-  document.title = `Vue.js ${to.meta.title} | TailAdmin - Vue.js Tailwind CSS Dashboard Template`
+  // If user is NOT logged in and trying to access protected routes, show marketing landing
+  if (!user && to.meta.requiresAuth) {
+    next({ path: '/' })
+    return
+  }
+
+  // If user IS logged in and visiting home page, direct to performance dashboard
+  if (user && to.path === '/') {
+    next({ path: '/performance' })
+    return
+  }
+
   next()
 })
+
+export default router
