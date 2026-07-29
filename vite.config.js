@@ -2,8 +2,8 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import path from 'path';
 
-export default defineConfig({
-  base: process.env.NODE_ENV === 'production' ? '/CognitiveMetrisAI_FE/' : '/',
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? '/CognitiveMetrisAI_FE/' : '/',
   plugins: [vue()],
   resolve: {
     alias: {
@@ -13,4 +13,4 @@ export default defineConfig({
   build: {
     outDir: 'dist'
   }
-});
+}));

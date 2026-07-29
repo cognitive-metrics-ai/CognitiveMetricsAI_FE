@@ -1,13 +1,12 @@
 import { fileURLToPath, URL } from 'node:url'
-
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
-export default defineConfig({
-  base: process.env.NODE_ENV === 'production' ? '/CognitiveMetrisAI_FE/' : '/',
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? '/CognitiveMetrisAI_FE/' : '/',
   plugins: [
     vue(),
     vueJsx(),
@@ -18,4 +17,4 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
-})
+}))
