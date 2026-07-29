@@ -3,14 +3,14 @@ import vue from '@vitejs/plugin-vue';
 import path from 'path';
 
 export default defineConfig({
-	plugins: [vue()],
-	resolve: {
-		alias: {
-			'@': path.resolve(__dirname, 'src'),
-		},
-	},
-  base: "./",
+  base: process.env.NODE_ENV === 'production' ? '/CognitiveMetrisAI_FE/' : '/',
+  plugins: [vue()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+    },
+  },
   build: {
-    outDir: 'dist' // or your preferred folder
+    outDir: 'dist'
   }
 });
