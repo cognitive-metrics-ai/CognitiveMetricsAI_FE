@@ -43,15 +43,15 @@
                 </p>
               </div>
               <div>
-                <div class="grid">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <!-- Google Sign In -->
                   <button
                     type="button"
                     @click="handleGoogleSignIn"
-                    class="inline-flex items-center justify-center py-3 text-sm font-normal text-gray-700 transition-colors bg-gray-100 rounded-lg px-12 hover:bg-gray-200 hover:text-gray-800 dark:bg-white/5 dark:text-white/90 dark:hover:bg-white/10"
+                    class="inline-flex items-center justify-center py-3 px-4 text-sm font-medium text-gray-700 transition-colors bg-gray-100 rounded-lg hover:bg-gray-200 hover:text-gray-800 dark:bg-white/5 dark:text-white/90 dark:hover:bg-white/10"
                   >
                     <svg
-                      width="20"
-                      height="20"
+                      class="w-5 h-5 mr-2"
                       viewBox="0 0 20 20"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
@@ -73,10 +73,22 @@
                         fill="#EB4335"
                       />
                     </svg>
-                    Sign in with Google
+                    Google
                   </button>
-                <div v-if="errorMsg" class="text-red-500 text-sm mt-2">{{ errorMsg }}</div>
+
+                  <!-- Facebook Sign In -->
+                  <button
+                    type="button"
+                    @click="handleFacebookSignIn"
+                    class="inline-flex items-center justify-center py-3 px-4 text-sm font-medium text-white transition-colors bg-[#1877F2] rounded-lg hover:bg-[#166FE5]"
+                  >
+                    <svg class="w-5 h-5 mr-2 fill-current" viewBox="0 0 24 24">
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                    Facebook
+                  </button>
                 </div>
+                <div v-if="errorMsg" class="text-red-500 text-sm mt-3 text-center">{{ errorMsg }}</div>
                 <div class="relative py-3 sm:py-5">
                   <div class="absolute inset-0 flex items-center">
                     <div class="w-full border-t border-gray-200 dark:border-gray-800"></div>
@@ -247,7 +259,7 @@
             <common-grid-shape />
             <div class="flex flex-col items-center max-w-xs">
               <router-link to="/" class="block mb-4">
-                <img width="{231}" height="{48}" src="/images/logo/logo.png" alt="Logo" />
+                <img width="{231}" height="{48}" src="/images/logo/logo_dark.svg" alt="Logo" />
               </router-link>
               <p class="text-center text-gray-400 dark:text-white/60">
                 Best Performance and Highly Optimized Admin Dashboard
@@ -263,10 +275,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import CommonGridShape from '@/components/common/CommonGridShape.vue'
 import FullScreenLayout from '@/components/layout/FullScreenLayout.vue'
-import { auth } from '@/firebase.js'
-import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
+import { auth, googleProvider, facebookProvider, signInWithPopup } from '@/firebase.js'
+import { signInWithEmailAndPassword } from 'firebase/auth'
 
 const email = ref('')
 const password = ref('')
@@ -280,11 +291,36 @@ const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value
 }
 
+const syncUserToBackend = async (firebaseUser: any, providerName: string) => {
+  try {
+    const payload = {
+      email: firebaseUser.email || `${firebaseUser.uid}@auth.local`,
+      full_name: firebaseUser.displayName || 'Enterprise User',
+      role: 'employee',
+      custom_metadata: {
+        auth_provider: providerName,
+        firebase_uid: firebaseUser.uid,
+        photo_url: firebaseUser.photoURL || '',
+      },
+    }
+    await fetch('http://localhost:8000/api/v1/users/sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+  } catch (err) {
+    console.warn('Backend DB user sync warning:', err)
+  }
+}
+
 const handleSubmit = async () => {
   errorMsg.value = ''
   loading.value = true
   try {
-    await signInWithEmailAndPassword(auth, email.value, password.value)
+    const result = await signInWithEmailAndPassword(auth, email.value, password.value)
+    if (result.user) {
+      await syncUserToBackend(result.user, 'password')
+    }
     router.push('/')
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -301,14 +337,36 @@ const handleGoogleSignIn = async () => {
   errorMsg.value = ''
   loading.value = true
   try {
-    const provider = new GoogleAuthProvider()
-    await signInWithPopup(auth, provider)
+    const result = await signInWithPopup(auth, googleProvider)
+    if (result.user) {
+      await syncUserToBackend(result.user, 'google.com')
+    }
     router.push('/')
   } catch (error: unknown) {
     if (error instanceof Error) {
       errorMsg.value = error.message
     } else {
       errorMsg.value = 'Google sign in failed.'
+    }
+  } finally {
+    loading.value = false
+  }
+}
+
+const handleFacebookSignIn = async () => {
+  errorMsg.value = ''
+  loading.value = true
+  try {
+    const result = await signInWithPopup(auth, facebookProvider)
+    if (result.user) {
+      await syncUserToBackend(result.user, 'facebook.com')
+    }
+    router.push('/')
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      errorMsg.value = error.message
+    } else {
+      errorMsg.value = 'Facebook sign in failed.'
     }
   } finally {
     loading.value = false

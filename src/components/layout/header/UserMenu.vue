@@ -1,78 +1,93 @@
 <template>
   <div class="relative" ref="dropdownRef">
-    <button
-      class="flex items-center text-gray-700 dark:text-gray-400"
-      @click.prevent="toggleDropdown"
-    >
-      <span class="mr-3 overflow-hidden rounded-full h-11 w-11">
-  <img :src="userPhotoURL" alt="User" />
-
-      </span>
-
-      <span class="block mr-1 font-medium text-theme-sm">{{ displayName }} </span>
-
-      <ChevronDownIcon :class="{ 'rotate-180': dropdownOpen }" />
-    </button>
-
-    <!-- Dropdown Start -->
-    <div
-      v-if="dropdownOpen"
-      class="absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark"
-    >
-      <div>
-        <span class="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-          {{ displayName }}
+    <!-- User Profile Dropdown (when signed in) -->
+    <template v-if="isAuthenticated">
+      <button
+        class="flex items-center text-gray-700 dark:text-gray-400 focus:outline-none"
+        @click.prevent="toggleDropdown"
+      >
+        <span class="mr-3 overflow-hidden rounded-full h-10 w-10 border border-gray-200 dark:border-gray-700 shadow-sm flex-shrink-0">
+          <img :src="userPhotoURL" alt="User" class="w-full h-full object-cover" />
         </span>
-        <span class="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-          {{ email }}
-        </span>
+
+        <span class="hidden sm:block mr-1 font-medium text-theme-sm text-gray-800 dark:text-white/90">{{ displayName }}</span>
+
+        <ChevronDownIcon class="transition-transform duration-200" :class="{ 'rotate-180': dropdownOpen }" />
+      </button>
+
+      <!-- Dropdown Start -->
+      <div
+        v-if="dropdownOpen"
+        class="absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark z-50"
+      >
+        <div class="px-2 py-1 border-b border-gray-200 dark:border-gray-800 pb-3">
+          <span class="block font-semibold text-gray-800 text-theme-sm dark:text-white">
+            {{ displayName }}
+          </span>
+          <span class="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400 truncate">
+            {{ email }}
+          </span>
+        </div>
+
+        <ul class="flex flex-col gap-1 pt-3 pb-2 border-b border-gray-200 dark:border-gray-800">
+          <li v-for="item in menuItems" :key="item.href">
+            <router-link
+              :to="item.href"
+              @click="closeDropdown"
+              class="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-200"
+            >
+              <component
+                :is="item.icon"
+                class="text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300 w-5 h-5"
+              />
+              {{ item.text }}
+            </router-link>
+          </li>
+        </ul>
+
+        <button
+          @click="handleSignOut"
+          class="flex items-center gap-3 px-3 py-2 mt-2 font-medium text-red-600 rounded-lg group text-theme-sm hover:bg-red-50 dark:hover:bg-red-500/10 transition w-full text-left"
+        >
+          <LogoutIcon class="w-5 h-5 text-red-500" />
+          Sign out
+        </button>
       </div>
+      <!-- Dropdown End -->
+    </template>
 
-      <ul class="flex flex-col gap-1 pt-4 pb-3 border-b border-gray-200 dark:border-gray-800">
-        <li v-for="item in menuItems" :key="item.href">
-          <router-link
-            :to="item.href"
-            class="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-          >
-            <!-- SVG icon would go here -->
-            <component
-              :is="item.icon"
-              class="text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300"
-            />
-            {{ item.text }}
-          </router-link>
-        </li>
-      </ul>
+    <!-- Sign In Button (when not signed in) -->
+    <template v-else>
       <router-link
         to="/signin"
-        @click="signOut"
-        class="flex items-center gap-3 px-3 py-2 mt-3 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+        class="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow hover:bg-blue-700 transition dark:bg-blue-600 dark:hover:bg-blue-700"
       >
-        <LogoutIcon
-          class="text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300"
-        />
-        Sign out
+        <UserCircleIcon class="w-5 h-5" />
+        Sign In
       </router-link>
-    </div>
-    <!-- Dropdown End -->
+    </template>
   </div>
 </template>
 
 <script setup>
-import { UserCircleIcon, ChevronDownIcon, LogoutIcon, SettingsIcon, InfoCircleIcon } from '@/icons'
-import { RouterLink } from 'vue-router'
 import { ref, onMounted, onUnmounted } from 'vue'
-import { auth } from '@/firebase.js'
+import { RouterLink, useRouter } from 'vue-router'
+import { UserCircleIcon, ChevronDownIcon, LogoutIcon, SettingsIcon, InfoCircleIcon } from '@/icons'
+import { auth, signOut } from '@/firebase.js'
 import { onAuthStateChanged } from 'firebase/auth'
 
 const dropdownOpen = ref(false)
 const dropdownRef = ref(null)
+const isAuthenticated = ref(false)
 const displayName = ref('')
 const email = ref('')
+const userPhotoURL = ref('/images/user/owner.jpg')
+
+const router = useRouter()
 
 const menuItems = [
   { href: '/profile', icon: UserCircleIcon, text: 'Edit profile' },
-  { href: '/chat', icon: SettingsIcon, text: 'Account settings' },
+  { href: '/profile', icon: SettingsIcon, text: 'Account settings' },
   { href: '/profile', icon: InfoCircleIcon, text: 'Support' },
 ]
 
@@ -84,10 +99,14 @@ const closeDropdown = () => {
   dropdownOpen.value = false
 }
 
-const signOut = () => {
-  // Implement sign out logic here
-  console.log('Signing out...')
-  closeDropdown()
+const handleSignOut = async () => {
+  try {
+    await signOut(auth)
+    closeDropdown()
+    router.push('/signin')
+  } catch (error) {
+    console.error('Error signing out:', error)
+  }
 }
 
 const handleClickOutside = (event) => {
@@ -96,27 +115,20 @@ const handleClickOutside = (event) => {
   }
 }
 
-const userPhotoURL = ref('/images/user/owner.jpg');
-onMounted(() => {
-  onAuthStateChanged(auth, (user) => {
-    if (user && user.photoURL) {
-      userPhotoURL.value = user.photoURL;
-    } else {
-      userPhotoURL.value = '/images/user/owner.jpg';
-    }
-  });
-});
-
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      displayName.value = user.displayName || user.email?.split('@')[0] || ''
+      isAuthenticated.value = true
+      displayName.value = user.displayName || user.email?.split('@')[0] || 'User'
       email.value = user.email || ''
+      userPhotoURL.value = user.photoURL || '/images/user/owner.jpg'
     } else {
+      isAuthenticated.value = false
       displayName.value = ''
       email.value = ''
+      userPhotoURL.value = '/images/user/owner.jpg'
     }
   })
 })

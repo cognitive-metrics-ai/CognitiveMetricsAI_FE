@@ -1,0 +1,8 @@
+    <svg width="350" height="250" viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+        <!-- "COGNITIVE" text in black -->
+        <text x="50%" y="75" text-anchor="left" font-size="20" font-weight="bold" fill="#000000" letter-spacing="2">COGNITIVE</text>
+        <!-- "METRIS" text in black and bold -->
+        <text x="50%" y="130" text-anchor="middle" font-size="60" font-weight="bold" fill="#6abce2">METRICS</text>
+        <!-- "AI" text in black, positioned on the right -->
+        <text x="65%" y="155" text-anchor="middle" font-size="20" font-weight="bold" fill="#000000" letter-spacing="2">AI</text>
+    </svg>

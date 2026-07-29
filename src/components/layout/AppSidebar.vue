@@ -23,7 +23,7 @@
         <img
           v-if="isExpanded || isHovered || isMobileOpen"
           class="dark:hidden"
-          src="/images/logo/logo.svg"
+          src="/images/logo/logo_light.svg"
           alt="Logo"
           width="150"
           height="40"
@@ -31,14 +31,14 @@
         <img
           v-if="isExpanded || isHovered || isMobileOpen"
           class="hidden dark:block"
-          src="/images/logo/logo.png"
+          src="/images/logo/logo_dark.svg"
           alt="Logo"
           width="150"
           height="40"
         />
         <img
           v-else
-          src="/images/logo/logo-icon.svg"
+          src="/images/logo/logo_icon.svg"
           alt="Logo"
           width="32"
           height="32"
@@ -237,25 +237,22 @@ const { isExpanded, isMobileOpen, isHovered, openSubmenu } = useSidebar();
 
 const menuGroups = [
   {
-    title: "Manager Menu",
+    title: "Cognitive AI Performance",
     items: [
       {
         icon: GridIcon,
-        name: "My Manager's Menu",
-        subItems: [
-          { name: "My Goals", path: "/", pro: false },
-          { name: "My Employees", path: "/", pro: false },
-          { name: "My Reports", path: "/", pro: false },
-        ],
+        name: "Performance Center",
+        path: "/performance",
       },
-            {
-        icon: GridIcon,
-        name: "KPIs",
-        subItems: [
-          { name: "Goals for Division", path: "/", pro: false },
-          { name: "Goals for Division", path: "/", pro: false },
-          { name: "Goals for Division", path: "/", pro: false },
-        ],
+      {
+        icon: PieChartIcon,
+        name: "AI Review Generator",
+        path: "/performance/review-generator",
+      },
+      {
+        icon: UserCircleIcon,
+        name: "Team Directory",
+        path: "/performance",
       },
     ],
   },

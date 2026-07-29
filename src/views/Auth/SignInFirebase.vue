@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-import { auth, provider, signInWithPopup, db } from '@/views/Auth/firebase';
+import { auth, googleProvider as provider, signInWithPopup, db } from '@/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { useRouter } from 'vue-router';
 

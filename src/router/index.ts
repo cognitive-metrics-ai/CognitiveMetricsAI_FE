@@ -8,10 +8,34 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'Ecommerce',
-      component: () => import('../views/Ecommerce.vue'),
+      name: 'PerformanceDashboard',
+      component: () => import('../views/Performance/OverviewDashboard.vue'),
       meta: {
-        title: 'eCommerce Dashboard',
+        title: 'Cognitive Performance Center',
+      },
+    },
+    {
+      path: '/performance',
+      name: 'PerformanceOverview',
+      component: () => import('../views/Performance/OverviewDashboard.vue'),
+      meta: {
+        title: 'Cognitive Performance Center',
+      },
+    },
+    {
+      path: '/performance/employees/:id',
+      name: 'EmployeeDetail',
+      component: () => import('../views/Performance/EmployeeDetail.vue'),
+      meta: {
+        title: 'Employee Cognitive Profile',
+      },
+    },
+    {
+      path: '/performance/review-generator',
+      name: 'ReviewGenerator',
+      component: () => import('../views/Performance/ReviewGenerator.vue'),
+      meta: {
+        title: 'AI Review Generator',
       },
     },
     {

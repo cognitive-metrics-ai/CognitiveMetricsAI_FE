@@ -14,7 +14,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { auth, provider, signInWithPopup, signOut, db } from '@/views/Auth/firebase';
+import { auth, googleProvider as provider, signInWithPopup, signOut, db } from '@/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 
