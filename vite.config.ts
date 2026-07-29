@@ -6,7 +6,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
-  base: command === 'build' ? '/CognitiveMetrisAI_FE/' : '/',
+  base: command === 'build' ? './' : '/',
   plugins: [
     vue(),
     vueJsx(),
