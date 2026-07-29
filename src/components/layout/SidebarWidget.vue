@@ -4,7 +4,7 @@
   >
     <h3 class="mb-2 font-semibold text-gray-900 dark:text-white">Cognitive Metrics AI</h3>
     <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-      &copy; 2024 Cognitive Metrics AI. All rights reserved.
+      &copy; 2026 Cognitive Metrics AI. All rights reserved.
     </p>
   </div>
 </template>
