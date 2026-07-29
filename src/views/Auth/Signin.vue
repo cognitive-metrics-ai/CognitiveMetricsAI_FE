@@ -268,7 +268,7 @@
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                   </div>
-                  <span class="text-2xl font-extrabold tracking-tight text-white">CognitiveMetrics<span class="text-purple-400">AI</span></span>
+                  <span class="text-2xl font-extrabold tracking-tight text-white">Cognitive Metrics <span class="text-purple-400">AI</span></span>
                 </div>
               </router-link>
               <p class="text-sm text-gray-400">

@@ -1,6 +1,6 @@
 <template>
 	<header class="w-full bg-white shadow flex items-center justify-between px-6 py-4">
-		<div class="font-bold text-lg">CognitiveMetricsAI</div>
+		<div class="font-bold text-lg">Cognitive Metrics AI</div>
 		<nav class="flex items-center space-x-6">
 			<ul class="flex space-x-4">
 				<li><a href="#" class="text-gray-700 hover:text-blue-600">Home</a></li>
