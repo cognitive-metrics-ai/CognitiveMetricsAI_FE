@@ -1,18 +1,19 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <FullScreenLayout>
-    <div class="relative p-6 bg-white z-1 dark:bg-gray-900 sm:p-0">
+    <div class="relative p-6 bg-black text-white z-1 sm:p-0">
       <div
-        class="relative flex flex-col justify-center w-full h-screen lg:flex-row dark:bg-gray-900"
+        class="relative flex flex-col justify-center w-full h-screen lg:flex-row bg-black"
       >
-        <div class="flex flex-col flex-1 w-full lg:w-1/2">
+        <!-- Left Side: Sign In Form (Black Background) -->
+        <div class="flex flex-col flex-1 w-full lg:w-1/2 bg-black px-6 sm:px-12">
           <div class="w-full max-w-md pt-10 mx-auto">
             <router-link
               to="/"
-              class="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+              class="inline-flex items-center text-sm text-gray-400 transition-colors hover:text-white"
             >
               <svg
-                class="stroke-current"
+                class="stroke-current mr-2"
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
                 height="20"
@@ -27,19 +28,19 @@
                   stroke-linejoin="round"
                 />
               </svg>
-              Back to dashboard
+              Back to showcase
             </router-link>
           </div>
           <div class="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
             <div>
               <div class="mb-5 sm:mb-8">
                 <h1
-                  class="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md"
+                  class="mb-2 font-bold text-white text-title-sm sm:text-title-md"
                 >
                   Sign In
                 </h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                  Enter your email and password to sign in!
+                <p class="text-sm text-gray-400">
+                  Enter your email and password or use social sign in to continue
                 </p>
               </div>
               <div>
@@ -48,7 +49,7 @@
                   <button
                     type="button"
                     @click="handleGoogleSignIn"
-                    class="inline-flex items-center justify-center py-3 px-4 text-sm font-medium text-gray-700 transition-colors bg-gray-100 rounded-lg hover:bg-gray-200 hover:text-gray-800 dark:bg-white/5 dark:text-white/90 dark:hover:bg-white/10"
+                    class="inline-flex items-center justify-center py-3 px-4 text-sm font-medium text-white transition-colors bg-gray-900 border border-gray-800 rounded-xl hover:bg-gray-800"
                   >
                     <svg
                       class="w-5 h-5 mr-2"
@@ -80,7 +81,7 @@
                   <button
                     type="button"
                     @click="handleFacebookSignIn"
-                    class="inline-flex items-center justify-center py-3 px-4 text-sm font-medium text-white transition-colors bg-[#1877F2] rounded-lg hover:bg-[#166FE5]"
+                    class="inline-flex items-center justify-center py-3 px-4 text-sm font-medium text-white transition-colors bg-[#1877F2] rounded-xl hover:bg-[#166FE5]"
                   >
                     <svg class="w-5 h-5 mr-2 fill-current" viewBox="0 0 24 24">
                       <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
@@ -88,13 +89,13 @@
                     Facebook
                   </button>
                 </div>
-                <div v-if="errorMsg" class="text-red-500 text-sm mt-3 text-center">{{ errorMsg }}</div>
+                <div v-if="errorMsg" class="text-red-400 text-sm mt-3 text-center">{{ errorMsg }}</div>
                 <div class="relative py-3 sm:py-5">
                   <div class="absolute inset-0 flex items-center">
-                    <div class="w-full border-t border-gray-200 dark:border-gray-800"></div>
+                    <div class="w-full border-t border-gray-800"></div>
                   </div>
                   <div class="relative flex justify-center text-sm">
-                    <span class="p-2 text-gray-400 bg-white dark:bg-gray-900 sm:px-5 sm:py-2"
+                    <span class="p-2 text-gray-500 bg-black sm:px-5 sm:py-2"
                       >Or</span
                     >
                   </div>
@@ -105,9 +106,9 @@
                     <div>
                       <label
                         for="email"
-                        class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400"
+                        class="mb-1.5 block text-sm font-medium text-gray-300"
                       >
-                        Email<span class="text-error-500">*</span>
+                        Email<span class="text-red-500">*</span>
                       </label>
                       <input
                         v-model="email"
@@ -115,16 +116,16 @@
                         id="email"
                         name="email"
                         placeholder="info@gmail.com"
-                        class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+                        class="h-11 w-full rounded-xl border border-gray-800 bg-gray-900/90 px-4 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
                       />
                     </div>
                     <!-- Password -->
                     <div>
                       <label
                         for="password"
-                        class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400"
+                        class="mb-1.5 block text-sm font-medium text-gray-300"
                       >
-                        Password<span class="text-error-500">*</span>
+                        Password<span class="text-red-500">*</span>
                       </label>
                       <div class="relative">
                         <input
@@ -132,11 +133,11 @@
                           :type="showPassword ? 'text' : 'password'"
                           id="password"
                           placeholder="Enter your password"
-                          class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pl-4 pr-11 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+                          class="h-11 w-full rounded-xl border border-gray-800 bg-gray-900/90 py-2.5 pl-4 pr-11 text-sm text-white placeholder:text-gray-500 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
                         />
                         <span
                           @click="togglePasswordVisibility"
-                          class="absolute z-30 text-gray-500 -translate-y-1/2 cursor-pointer right-4 top-1/2 dark:text-gray-400"
+                          class="absolute z-30 text-gray-400 -translate-y-1/2 cursor-pointer right-4 top-1/2 hover:text-white"
                         >
                           <svg
                             v-if="!showPassword"
@@ -173,12 +174,12 @@
                         </span>
                       </div>
                     </div>
-                    <!-- Checkbox -->
+                    <!-- Checkbox & Forgot Password -->
                     <div class="flex items-center justify-between">
                       <div>
                         <label
                           for="keepLoggedIn"
-                          class="flex items-center text-sm font-normal text-gray-700 cursor-pointer select-none dark:text-gray-400"
+                          class="flex items-center text-sm font-normal text-gray-400 cursor-pointer select-none"
                         >
                           <div class="relative">
                             <input
@@ -190,8 +191,8 @@
                             <div
                               :class="
                                 keepLoggedIn
-                                  ? 'border-brand-500 bg-brand-500'
-                                  : 'bg-transparent border-gray-300 dark:border-gray-700'
+                                  ? 'border-purple-500 bg-purple-600'
+                                  : 'bg-gray-900 border-gray-800'
                               "
                               class="mr-3 flex h-5 w-5 items-center justify-center rounded-md border-[1.25px]"
                             >
@@ -219,15 +220,15 @@
                       </div>
                       <router-link
                         to="/reset-password"
-                        class="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
+                        class="text-sm text-purple-400 hover:text-purple-300"
                         >Forgot password?</router-link
                       >
                     </div>
-                    <!-- Button -->
+                    <!-- Submit Button -->
                     <div>
                       <button
                         type="submit"
-                        class="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600"
+                        class="flex items-center justify-center w-full px-4 py-3 text-sm font-bold text-white transition rounded-xl bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-600 hover:opacity-95 shadow-lg shadow-purple-500/20"
                         :disabled="loading"
                       >
                         <span v-if="loading" class="loader mr-2"></span>
@@ -238,12 +239,12 @@
                 </form>
                 <div class="mt-5">
                   <p
-                    class="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start"
+                    class="text-sm font-normal text-center text-gray-400 sm:text-start"
                   >
                     Don't have an account?
                     <router-link
                       to="/signup"
-                      class="text-brand-500 hover:text-brand-600 dark:text-brand-400"
+                      class="text-purple-400 hover:text-purple-300 font-medium"
                       >Sign Up</router-link
                     >
                   </p>
@@ -252,17 +253,26 @@
             </div>
           </div>
         </div>
+
+        <!-- Right Side: Graphic Branding -->
         <div
-          class="relative items-center hidden w-full h-full lg:w-1/2 bg-brand-950 dark:bg-white/5 lg:grid"
+          class="relative items-center hidden w-full h-full lg:w-1/2 bg-gray-950 border-l border-gray-800/80 lg:grid"
         >
           <div class="flex items-center justify-center z-1">
             <common-grid-shape />
-            <div class="flex flex-col items-center max-w-xs">
+            <div class="flex flex-col items-center max-w-xs text-center">
               <router-link to="/" class="block mb-4">
-                <img width="{231}" height="{48}" src="/images/logo/logo_dark.svg" alt="Logo" />
+                <div class="flex items-center gap-3">
+                  <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                  <span class="text-2xl font-extrabold tracking-tight text-white">CognitiveMetrics<span class="text-purple-400">AI</span></span>
+                </div>
               </router-link>
-              <p class="text-center text-gray-400 dark:text-white/60">
-                Best Performance and Highly Optimized Admin Dashboard
+              <p class="text-sm text-gray-400">
+                Continuous Performance Measurement & Cognitive Load Analytics Platform
               </p>
             </div>
           </div>
