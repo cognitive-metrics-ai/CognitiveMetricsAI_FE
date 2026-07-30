@@ -262,14 +262,7 @@
             <common-grid-shape />
             <div class="flex flex-col items-center max-w-xs text-center">
               <router-link to="/" class="block mb-4">
-                <div class="flex items-center gap-3">
-                  <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
-                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  </div>
-                  <span class="text-2xl font-extrabold tracking-tight text-white">Cognitive Metrics <span class="text-purple-400">AI</span></span>
-                </div>
+                <img class="h-12 w-auto max-w-[240px] object-contain" src="/images/logo/logo_dark.png" alt="Cognitive Metrics AI Logo" />
               </router-link>
               <p class="text-sm text-gray-400">
                 Continuous Performance Measurement & Cognitive Load Analytics Platform

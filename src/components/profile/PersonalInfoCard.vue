@@ -10,29 +10,29 @@
           <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
             <div>
               <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">First Name</p>
-              <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ firstName }}</p>
+              <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ firstName || '—' }}</p>
             </div>
 
             <div>
               <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Last Name</p>
-              <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ lastName }}</p>
+              <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ lastName || '—' }}</p>
             </div>
 
             <div>
               <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
                 Email address
               </p>
-              <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ email }}</p>
+              <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ email || '—' }}</p>
             </div>
 
             <div>
               <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Phone</p>
-              <p class="text-sm font-medium text-gray-800 dark:text-white/90">+09 363 398 46</p>
+              <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ phone || '—' }}</p>
             </div>
 
             <div>
               <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Bio</p>
-              <p class="text-sm font-medium text-gray-800 dark:text-white/90">Team Manager</p>
+              <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ bio || '—' }}</p>
             </div>
           </div>
         </div>
@@ -88,10 +88,10 @@
               Edit Personal Information
             </h4>
             <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
-              Update your details to keep your profile up-to-date.
+              Update your details to sync automatically with Neon database.
             </p>
           </div>
-          <form class="flex flex-col">
+          <form class="flex flex-col" @submit.prevent="saveProfile">
             <div class="custom-scrollbar h-[458px] overflow-y-auto p-2">
               <div>
                 <h5 class="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
@@ -107,7 +107,7 @@
                     </label>
                     <input
                       type="text"
-                      value="https://www.facebook.com/PimjoHQ"
+                      v-model="facebook"
                       class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
                     />
                   </div>
@@ -120,7 +120,7 @@
                     </label>
                     <input
                       type="text"
-                      value="https://x.com/PimjoHQ"
+                      v-model="xLink"
                       class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
                     />
                   </div>
@@ -133,7 +133,7 @@
                     </label>
                     <input
                       type="text"
-                      value="https://www.linkedin.com/company/pimjo/posts/?feedView=all"
+                      v-model="linkedin"
                       class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
                     />
                   </div>
@@ -146,7 +146,7 @@
                     </label>
                     <input
                       type="text"
-                      value="https://instagram.com/PimjoHQ"
+                      v-model="instagram"
                       class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
                     />
                   </div>
@@ -205,7 +205,7 @@
                     </label>
                     <input
                       type="text"
-                      value="+09 363 398 46"
+                      v-model="phone"
                       class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
                     />
                   </div>
@@ -218,12 +218,18 @@
                     </label>
                     <input
                       type="text"
-                      value="Team Manager"
+                      v-model="bio"
                       class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
                     />
                   </div>
                 </div>
               </div>
+            </div>
+            <div v-if="saveMessage" class="px-2 mt-3 text-sm font-medium text-green-600 dark:text-green-400">
+              {{ saveMessage }}
+            </div>
+            <div v-if="errorMessage" class="px-2 mt-3 text-sm font-medium text-red-600 dark:text-red-400">
+              {{ errorMessage }}
             </div>
             <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
               <button
@@ -234,11 +240,12 @@
                 Close
               </button>
               <button
-                @click="saveProfile"
-                type="button"
-                class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                type="submit"
+                :disabled="saving"
+                class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto disabled:opacity-50"
               >
-                Save Changes
+                <span v-if="saving">Saving to Neon DB...</span>
+                <span v-else>Save Changes</span>
               </button>
             </div>
           </form>
@@ -248,34 +255,91 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { auth } from '@/firebase.js'
 import { onAuthStateChanged } from 'firebase/auth'
 import Modal from './Modal.vue'
+import { UserService } from '@/services/userService'
 
 const isProfileInfoModal = ref(false)
 const firstName = ref('')
 const lastName = ref('')
 const email = ref('')
-const photoURL = ref('')
+const phone = ref('+09 363 398 46')
+const bio = ref('Team Manager')
+
+const facebook = ref('https://www.facebook.com/PimjoHQ')
+const xLink = ref('https://x.com/PimjoHQ')
+const linkedin = ref('https://www.linkedin.com/company/pimjo/posts/?feedView=all')
+const instagram = ref('https://instagram.com/PimjoHQ')
+
+const saving = ref(false)
+const saveMessage = ref('')
+const errorMessage = ref('')
+
+const loadProfile = async (userEmail: string) => {
+  const data = await UserService.fetchUserProfile(userEmail)
+  if (data) {
+    firstName.value = data.first_name || firstName.value
+    lastName.value = data.last_name || lastName.value
+    email.value = data.email || email.value
+    phone.value = data.phone || phone.value
+    bio.value = data.bio || bio.value
+    facebook.value = data.facebook || facebook.value
+    xLink.value = data.x || xLink.value
+    linkedin.value = data.linkedin || linkedin.value
+    instagram.value = data.instagram || instagram.value
+  }
+}
 
 onMounted(() => {
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     if (user) {
-      const displayName = user.displayName || ''
-      firstName.value = displayName.split(' ')[0] || ''
-      lastName.value = displayName.split(' ')[1] || ''
       email.value = user.email || ''
-      photoURL.value = user.photoURL || '/images/user/owner.jpg'
+      const displayName = user.displayName || ''
+      if (displayName) {
+        firstName.value = displayName.split(' ')[0] || ''
+        lastName.value = displayName.split(' ').slice(1).join(' ') || ''
+      }
+      if (email.value) {
+        await loadProfile(email.value)
+      }
     }
   })
 })
 
-const saveProfile = () => {
-  // Implement save profile logic here
-  console.log('Profile saved')
-  isProfileInfoModal.value = false
+const saveProfile = async () => {
+  if (!email.value) {
+    errorMessage.value = 'Email address is required.'
+    return
+  }
+  saving.value = true
+  saveMessage.value = ''
+  errorMessage.value = ''
+
+  try {
+    await UserService.updateUserProfile({
+      email: email.value,
+      first_name: firstName.value,
+      last_name: lastName.value,
+      full_name: `${firstName.value} ${lastName.value}`.trim(),
+      phone: phone.value,
+      bio: bio.value,
+      facebook: facebook.value,
+      x: xLink.value,
+      linkedin: linkedin.value,
+      instagram: instagram.value,
+    })
+    saveMessage.value = 'Profile updated successfully in Neon database!'
+    setTimeout(() => {
+      isProfileInfoModal.value = false
+      saveMessage.value = ''
+    }, 1200)
+  } catch (err: any) {
+    errorMessage.value = err?.message || 'Failed to update profile in Neon DB.'
+  } finally {
+    saving.value = false
+  }
 }
 </script>

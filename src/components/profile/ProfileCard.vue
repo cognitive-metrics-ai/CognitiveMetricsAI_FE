@@ -1,32 +1,93 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import Modal from './Modal.vue'
 import { auth } from '@/firebase.js'
-import { onAuthStateChanged, updateProfile } from 'firebase/auth'
+import { onAuthStateChanged } from 'firebase/auth'
+import { UserService } from '@/services/userService'
+
 const userPhotoURL = ref('')
 const isProfileInfoModal = ref(false)
 const firstName = ref('')
 const lastName = ref('')
 const email = ref('')
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    const displayName = user.displayName || ''
-    firstName.value = displayName.split(' ')[0] || ''
-    lastName.value = displayName.split(' ')[1] || ''
-    email.value = user.email || ''
-    userPhotoURL.value = user.photoURL || ''
+const phone = ref('+09 363 398 46')
+const bio = ref('Team Manager')
+
+const facebook = ref('https://www.facebook.com/PimjoHQ')
+const xLink = ref('https://x.com/PimjoHQ')
+const linkedin = ref('https://www.linkedin.com/company/pimjo/posts/?feedView=all')
+const instagram = ref('https://instagram.com/PimjoHQ')
+
+const saving = ref(false)
+const saveMessage = ref('')
+const errorMessage = ref('')
+
+const loadProfile = async (userEmail: string) => {
+  const data = await UserService.fetchUserProfile(userEmail)
+  if (data) {
+    firstName.value = data.first_name || firstName.value
+    lastName.value = data.last_name || lastName.value
+    email.value = data.email || email.value
+    phone.value = data.phone || phone.value
+    bio.value = data.bio || bio.value
+    facebook.value = data.facebook || facebook.value
+    xLink.value = data.x || xLink.value
+    linkedin.value = data.linkedin || linkedin.value
+    instagram.value = data.instagram || instagram.value
+    if (data.photo_url) userPhotoURL.value = data.photo_url
   }
+}
+
+onMounted(() => {
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      email.value = user.email || ''
+      userPhotoURL.value = user.photoURL || ''
+      const displayName = user.displayName || ''
+      if (displayName) {
+        firstName.value = displayName.split(' ')[0] || ''
+        lastName.value = displayName.split(' ').slice(1).join(' ') || ''
+      }
+      if (email.value) {
+        await loadProfile(email.value)
+      }
+    }
+  })
 })
+
 const saveProfile = async () => {
-  const user = auth.currentUser
-  if (user) {
-    await updateProfile(user, {
-      displayName: `${firstName.value} ${lastName.value}`
-    })
-    // Optionally, update email here if you want to allow email change
-    // await updateEmail(user, email.value)
+  if (!email.value) {
+    errorMessage.value = 'Email address is required.'
+    return
   }
-  isProfileInfoModal.value = false
+  saving.value = true
+  saveMessage.value = ''
+  errorMessage.value = ''
+
+  try {
+    await UserService.updateUserProfile({
+      email: email.value,
+      first_name: firstName.value,
+      last_name: lastName.value,
+      full_name: `${firstName.value} ${lastName.value}`.trim(),
+      phone: phone.value,
+      bio: bio.value,
+      facebook: facebook.value,
+      x: xLink.value,
+      linkedin: linkedin.value,
+      instagram: instagram.value,
+      photo_url: userPhotoURL.value,
+    })
+    saveMessage.value = 'Profile updated successfully in Neon database!'
+    setTimeout(() => {
+      isProfileInfoModal.value = false
+      saveMessage.value = ''
+    }, 1200)
+  } catch (err: any) {
+    errorMessage.value = err?.message || 'Failed to update profile in Neon DB.'
+  } finally {
+    saving.value = false
+  }
 }
 </script>
 <template>
@@ -48,14 +109,14 @@ const saveProfile = async () => {
             <div
               class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left"
             >
-              <p class="text-sm text-gray-500 dark:text-gray-400">Team Manager</p>
+              <p class="text-sm text-gray-500 dark:text-gray-400">{{ bio || 'Team Manager' }}</p>
               <div class="hidden h-3.5 w-px bg-gray-300 dark:bg-gray-700 xl:block"></div>
               <p class="text-sm text-gray-500 dark:text-gray-400">Arizona, United States</p>
             </div>
           </div>
           <div class="flex items-center order-2 gap-2 grow xl:order-3 xl:justify-end">
             <a
-              href="https://www.facebook.com/PimjoHQ"
+              :href="facebook"
               target="_blank"
               rel="noopener"
               class="social-button"
@@ -74,7 +135,7 @@ const saveProfile = async () => {
                 />
               </svg>
             </a>
-            <a href="https://x.com/PimjoHQ" target="_blank" rel="noopener" class="social-button">
+            <a :href="xLink" target="_blank" rel="noopener" class="social-button">
               <svg
                 class="fill-current"
                 width="20"
@@ -90,7 +151,7 @@ const saveProfile = async () => {
               </svg>
             </a>
             <a
-              href="https://www.linkedin.com/company/pimjo/"
+              :href="linkedin"
               target="_blank"
               rel="noopener"
               class="social-button"
@@ -110,7 +171,7 @@ const saveProfile = async () => {
               </svg>
             </a>
             <a
-              href="https://www.instagram.com/PimjoHQ"
+              :href="instagram"
               target="_blank"
               rel="noopener"
               class="social-button"
@@ -182,10 +243,10 @@ const saveProfile = async () => {
               Edit Personal Information
             </h4>
             <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
-              Update your details to keep your profile up-to-date.
+              Update your details to sync automatically with Neon database.
             </p>
           </div>
-          <form class="flex flex-col">
+          <form class="flex flex-col" @submit.prevent="saveProfile">
             <div class="custom-scrollbar h-[458px] overflow-y-auto p-2">
               <div>
                 <h5 class="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
@@ -201,7 +262,7 @@ const saveProfile = async () => {
                     </label>
                     <input
                       type="text"
-                      value="https://www.facebook.com/PimjoHQ"
+                      v-model="facebook"
                       class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
                     />
                   </div>
@@ -214,7 +275,7 @@ const saveProfile = async () => {
                     </label>
                     <input
                       type="text"
-                      value="https://x.com/PimjoHQ"
+                      v-model="xLink"
                       class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
                     />
                   </div>
@@ -227,7 +288,7 @@ const saveProfile = async () => {
                     </label>
                     <input
                       type="text"
-                      value="https://www.linkedin.com/company/pimjo/posts/?feedView=all"
+                      v-model="linkedin"
                       class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
                     />
                   </div>
@@ -240,7 +301,7 @@ const saveProfile = async () => {
                     </label>
                     <input
                       type="text"
-                      value="https://instagram.com/PimjoHQ"
+                      v-model="instagram"
                       class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
                     />
                   </div>
@@ -260,7 +321,7 @@ const saveProfile = async () => {
                     </label>
                     <input
                       type="text"
-                      value="Jeremy"
+                      v-model="firstName"
                       class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
                     />
                   </div>
@@ -273,7 +334,7 @@ const saveProfile = async () => {
                     </label>
                     <input
                       type="text"
-                      value="Chowdhury"
+                      v-model="lastName"
                       class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
                     />
                   </div>
@@ -286,7 +347,7 @@ const saveProfile = async () => {
                     </label>
                     <input
                       type="text"
-                      value="jwlankford@gmail.com"
+                      v-model="email"
                       class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
                     />
                   </div>
@@ -299,7 +360,7 @@ const saveProfile = async () => {
                     </label>
                     <input
                       type="text"
-                      value="+09 363 398 46"
+                      v-model="phone"
                       class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
                     />
                   </div>
@@ -312,12 +373,18 @@ const saveProfile = async () => {
                     </label>
                     <input
                       type="text"
-                      value="Team Manager"
+                      v-model="bio"
                       class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
                     />
                   </div>
                 </div>
               </div>
+            </div>
+            <div v-if="saveMessage" class="px-2 mt-3 text-sm font-medium text-green-600 dark:text-green-400">
+              {{ saveMessage }}
+            </div>
+            <div v-if="errorMessage" class="px-2 mt-3 text-sm font-medium text-red-600 dark:text-red-400">
+              {{ errorMessage }}
             </div>
             <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
               <button
@@ -328,11 +395,12 @@ const saveProfile = async () => {
                 Close
               </button>
               <button
-                @click="saveProfile"
-                type="button"
-                class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                type="submit"
+                :disabled="saving"
+                class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto disabled:opacity-50"
               >
-                Save Changes
+                <span v-if="saving">Saving to Neon DB...</span>
+                <span v-else>Save Changes</span>
               </button>
             </div>
           </form>

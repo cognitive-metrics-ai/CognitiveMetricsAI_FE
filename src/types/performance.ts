@@ -17,12 +17,13 @@ export interface CognitiveTrendPoint {
 export interface PerformanceReview {
   id: string;
   employeeId: string;
+  reviewerId?: string;
   period: string; // e.g. "Q1 2026", "H1 2026"
   reviewDate: string;
   overallRating: number; // 1 to 5
   cognitiveSummary: string;
-  strengths: string[];
-  growthAreas: string[];
+  strengths?: string[];
+  growthAreas?: string[];
   aiGeneratedInsights: string;
   managerNotes?: string;
   status: 'draft' | 'submitted' | 'approved';

@@ -240,8 +240,13 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import AdminLayout from '../../components/layout/AdminLayout.vue'
 import { usePerformanceStore } from '../../stores/performanceStore'
 
 const performanceStore = usePerformanceStore()
+
+onMounted(() => {
+  performanceStore.fetchBackendData()
+})
 </script>

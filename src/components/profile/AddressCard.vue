@@ -8,13 +8,13 @@
           <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
             <div>
               <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Country</p>
-              <p class="text-sm font-medium text-gray-800 dark:text-white/90">United States</p>
+              <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ country || '—' }}</p>
             </div>
 
             <div>
               <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">City/State</p>
               <p class="text-sm font-medium text-gray-800 dark:text-white/90">
-                Phoenix, United States
+                {{ cityState || '—' }}
               </p>
             </div>
 
@@ -22,12 +22,12 @@
               <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
                 Postal Code
               </p>
-              <p class="text-sm font-medium text-gray-800 dark:text-white/90">ERT 2489</p>
+              <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ postalCode || '—' }}</p>
             </div>
 
             <div>
               <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">TAX ID</p>
-              <p class="text-sm font-medium text-gray-800 dark:text-white/90">AS4568384</p>
+              <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ taxId || '—' }}</p>
             </div>
           </div>
         </div>
@@ -86,10 +86,10 @@
               Edit Address
             </h4>
             <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
-              Update your details to keep your profile up-to-date.
+              Update your details to sync automatically with Neon database.
             </p>
           </div>
-          <form class="flex flex-col">
+          <form class="flex flex-col" @submit.prevent="saveAddress">
             <div class="px-2 overflow-y-auto custom-scrollbar">
               <div class="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                 <div>
@@ -98,7 +98,7 @@
                   </label>
                   <input
                     type="text"
-                    value="United States"
+                    v-model="country"
                     class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
                   />
                 </div>
@@ -109,7 +109,7 @@
                   </label>
                   <input
                     type="text"
-                    value="Poenix, Arizona, United States"
+                    v-model="cityState"
                     class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
                   />
                 </div>
@@ -120,7 +120,7 @@
                   </label>
                   <input
                     type="text"
-                    value="ERT 2489"
+                    v-model="postalCode"
                     class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
                   />
                 </div>
@@ -131,11 +131,17 @@
                   </label>
                   <input
                     type="text"
-                    value="AS4568384"
+                    v-model="taxId"
                     class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
                   />
                 </div>
               </div>
+            </div>
+            <div v-if="saveMessage" class="px-2 mt-3 text-sm font-medium text-green-600 dark:text-green-400">
+              {{ saveMessage }}
+            </div>
+            <div v-if="errorMessage" class="px-2 mt-3 text-sm font-medium text-red-600 dark:text-red-400">
+              {{ errorMessage }}
             </div>
             <div class="flex items-center gap-3 mt-6 lg:justify-end">
               <button
@@ -146,11 +152,12 @@
                 Close
               </button>
               <button
-                @click="saveProfile"
-                type="button"
-                class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                type="submit"
+                :disabled="saving"
+                class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto disabled:opacity-50"
               >
-                Save Changes
+                <span v-if="saving">Saving to Neon DB...</span>
+                <span v-else>Save Changes</span>
               </button>
             </div>
           </form>
@@ -160,17 +167,71 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from 'vue'
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { auth } from '@/firebase.js'
+import { onAuthStateChanged } from 'firebase/auth'
 import Modal from './Modal.vue'
+import { UserService } from '@/services/userService'
 
 const isProfileAddressModal = ref(false)
+const email = ref('')
 
-const saveProfile = () => {
-  // Implement save profile logic here
-  console.log('Profile saved')
-  isProfileInfoModal.value = false
+const country = ref('United States')
+const cityState = ref('Phoenix, Arizona, United States')
+const postalCode = ref('ERT 2489')
+const taxId = ref('AS4568384')
+
+const saving = ref(false)
+const saveMessage = ref('')
+const errorMessage = ref('')
+
+const loadProfile = async (userEmail: string) => {
+  const data = await UserService.fetchUserProfile(userEmail)
+  if (data) {
+    email.value = data.email || email.value
+    country.value = data.country || country.value
+    cityState.value = data.city_state || cityState.value
+    postalCode.value = data.postal_code || postalCode.value
+    taxId.value = data.tax_id || taxId.value
+  }
+}
+
+onMounted(() => {
+  onAuthStateChanged(auth, async (user) => {
+    if (user && user.email) {
+      email.value = user.email
+      await loadProfile(user.email)
+    }
+  })
+})
+
+const saveAddress = async () => {
+  if (!email.value) {
+    errorMessage.value = 'Email address is required.'
+    return
+  }
+  saving.value = true
+  saveMessage.value = ''
+  errorMessage.value = ''
+
+  try {
+    await UserService.updateUserProfile({
+      email: email.value,
+      country: country.value,
+      city_state: cityState.value,
+      postal_code: postalCode.value,
+      tax_id: taxId.value,
+    })
+    saveMessage.value = 'Address updated successfully in Neon database!'
+    setTimeout(() => {
+      isProfileAddressModal.value = false
+      saveMessage.value = ''
+    }, 1200)
+  } catch (err: any) {
+    errorMessage.value = err?.message || 'Failed to update address in Neon DB.'
+  } finally {
+    saving.value = false
+  }
 }
 </script>
-
-<style></style>

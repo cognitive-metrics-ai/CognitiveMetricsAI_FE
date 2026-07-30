@@ -19,30 +19,31 @@
         !isExpanded && !isHovered ? 'lg:justify-center' : 'justify-start',
       ]"
     >
-      <router-link to="/">
-        <img
-          v-if="isExpanded || isHovered || isMobileOpen"
-          class="dark:hidden"
-          src="/images/logo/logo_light.svg"
-          alt="Logo"
-          width="150"
-          height="40"
-        />
-        <img
-          v-if="isExpanded || isHovered || isMobileOpen"
-          class="hidden dark:block"
-          src="/images/logo/logo_dark.svg"
-          alt="Logo"
-          width="150"
-          height="40"
-        />
-        <img
-          v-else
-          src="/images/logo/logo_icon.svg"
-          alt="Logo"
-          width="32"
-          height="32"
-        />
+      <router-link to="/" class="flex items-center">
+        <template v-if="isExpanded || isHovered || isMobileOpen">
+          <img
+            class="dark:hidden h-10 w-auto max-w-[200px] object-contain"
+            src="/images/logo/logo_light.png"
+            alt="Logo"
+          />
+          <img
+            class="hidden dark:block h-10 w-auto max-w-[200px] object-contain"
+            src="/images/logo/logo_dark.png"
+            alt="Logo"
+          />
+        </template>
+        <template v-else>
+          <img
+            class="dark:hidden h-9 w-9 object-contain"
+            src="/images/logo/logo_icon_light.png"
+            alt="Logo"
+          />
+          <img
+            class="hidden dark:block h-9 w-9 object-contain"
+            src="/images/logo/logo_icon_dark.png"
+            alt="Logo"
+          />
+        </template>
       </router-link>
     </div>
     <div
@@ -241,6 +242,16 @@ const menuGroups = [
     items: [
       {
         icon: GridIcon,
+        name: "Dashboard",
+        subItems: [
+          { name: "Overview", path: "/", pro: false },
+          { name: "Performance Center", path: "/performance", pro: false },
+          { name: "AI Review Generator", path: "/performance/review-generator", pro: false },
+          { name: "Team Directory", path: "/performance", pro: false },
+        ],
+      },
+      {
+        icon: GridIcon,
         name: "Performance Center",
         path: "/performance",
       },
@@ -262,9 +273,9 @@ const menuGroups = [
       {
         icon: GridIcon,
         name: "My Manager's Menu",
-       path: "/"
+        path: "/"
       },
-            {
+      {
         icon: GridIcon,
         name: "KPIs",
         subItems: [
@@ -272,12 +283,6 @@ const menuGroups = [
           { name: "Goals for Division", path: "/", pro: false },
           { name: "Goals for Division", path: "/", pro: false },
         ],
-      },
-
-            {
-        icon: GridIcon,
-        name: "Dashboard",
-        subItems: [{ name: "Ecommerce", path: "/", pro: false }],
       },
       {
         icon: CalenderIcon,
@@ -289,7 +294,6 @@ const menuGroups = [
         name: "User Profile",
         path: "/profile",
       },
-
       {
         name: "Forms",
         icon: ListIcon,
@@ -300,13 +304,16 @@ const menuGroups = [
       {
         name: "Tables",
         icon: TableIcon,
-        subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
+        subItems: [
+          { name: "Employee Table", path: "/basic-tables", pro: false },
+          { name: "Basic Tables", path: "/basic-tables", pro: false },
+        ],
       },
       {
         name: "Pages",
         icon: PageIcon,
         subItems: [
-          { name: "Black Page", path: "/blank", pro: false },
+          { name: "Blank Page", path: "/blank", pro: false },
           { name: "404 Page", path: "/error-404", pro: false },
         ],
       },

@@ -168,7 +168,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import AdminLayout from '../../components/layout/AdminLayout.vue'
 import { usePerformanceStore } from '../../stores/performanceStore'
@@ -176,6 +176,10 @@ import { CognitiveAIService } from '../../services/cognitiveAiService'
 
 const route = useRoute()
 const performanceStore = usePerformanceStore()
+
+onMounted(() => {
+  performanceStore.fetchBackendData()
+})
 
 const employeeId = computed(() => route.params.id as string)
 const employee = computed(() => performanceStore.getEmployeeById(employeeId.value))

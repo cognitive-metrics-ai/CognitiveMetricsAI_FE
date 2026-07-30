@@ -4,14 +4,9 @@
     <header class="sticky top-0 z-50 backdrop-blur-xl bg-gray-950/80 border-b border-gray-800/80">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         <!-- Logo -->
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/20">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-          </div>
-          <span class="text-xl font-bold tracking-tight text-white">Cognitive Metrics <span class="text-purple-400">AI</span></span>
-        </div>
+        <router-link to="/" class="flex items-center">
+          <img class="h-10 w-auto max-w-[220px] object-contain" src="/images/logo/logo_dark.png" alt="Cognitive Metrics AI Logo" />
+        </router-link>
 
         <!-- Nav Links -->
         <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-400">
