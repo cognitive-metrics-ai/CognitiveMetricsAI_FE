@@ -42,7 +42,7 @@ onMounted(() => {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       email.value = user.email || ''
-      userPhotoURL.value = user.photoURL || ''
+      const firebasePhoto = user.photoURL || ''
       const displayName = user.displayName || ''
       if (displayName) {
         firstName.value = displayName.split(' ')[0] || ''
@@ -50,6 +50,9 @@ onMounted(() => {
       }
       if (email.value) {
         await loadProfile(email.value)
+      }
+      if (firebasePhoto) {
+        userPhotoURL.value = firebasePhoto
       }
     }
   })
