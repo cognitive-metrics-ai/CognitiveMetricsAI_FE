@@ -37,6 +37,10 @@
               <span class="text-xs text-gray-400">{{ goal.targetDate }}</span>
             </div>
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">{{ goal.title }}</h3>
+            <div class="flex flex-wrap gap-2 mb-2" v-if="goal.division || goal.jobRole">
+              <span v-if="goal.division" class="px-2 py-0.5 text-[10px] font-semibold bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300 rounded shadow-sm">{{ goal.division }}</span>
+              <span v-if="goal.jobRole" class="px-2 py-0.5 text-[10px] font-semibold bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400 rounded shadow-sm">{{ goal.jobRole }}</span>
+            </div>
             <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
               {{ goal.description }}
             </p>
@@ -107,6 +111,36 @@
               ></textarea>
             </div>
             
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Division</label>
+                <select
+                  v-model="newGoal.division"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                >
+                  <option value="" disabled>Select division</option>
+                  <option value="Engineering">Engineering</option>
+                  <option value="Product & UX">Product & UX</option>
+                  <option value="Sales">Sales</option>
+                  <option value="Marketing">Marketing</option>
+                </select>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Job Role</label>
+                <select
+                  v-model="newGoal.jobRole"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                >
+                  <option value="" disabled>Select role</option>
+                  <option value="Frontend Developer">Frontend Developer</option>
+                  <option value="Backend Developer">Backend Developer</option>
+                  <option value="UX Designer">UX Designer</option>
+                  <option value="Product Manager">Product Manager</option>
+                </select>
+              </div>
+            </div>
+            
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Goal Until Date</label>
               <flat-pickr
@@ -152,6 +186,8 @@ interface Goal {
   description: string
   targetDate: string
   status: 'Not Started' | 'In Progress' | 'Completed'
+  division?: string
+  jobRole?: string
 }
 
 // Initial mock state
@@ -161,14 +197,18 @@ const goals = ref<Goal[]>([
     title: 'Complete Q3 Reviews',
     description: 'Use the AI Review Generator to finalize Q3 performance reviews for the UX design team.',
     targetDate: '2026-08-15',
-    status: 'In Progress'
+    status: 'In Progress',
+    division: 'Product & UX',
+    jobRole: 'UX Designer'
   },
   {
     id: 2,
     title: 'Assess Engineering Focus Index',
     description: 'Review the cognitive workload and focus index metrics for the frontend engineering division.',
     targetDate: '2026-08-20',
-    status: 'Not Started'
+    status: 'Not Started',
+    division: 'Engineering',
+    jobRole: 'Frontend Developer'
   }
 ])
 
@@ -177,7 +217,9 @@ const showAddModal = ref(false)
 const newGoal = ref({
   title: '',
   description: '',
-  targetDate: ''
+  targetDate: '',
+  division: '',
+  jobRole: ''
 })
 
 const flatpickrConfig = {
@@ -191,7 +233,9 @@ const closeModal = () => {
   newGoal.value = {
     title: '',
     description: '',
-    targetDate: ''
+    targetDate: '',
+    division: '',
+    jobRole: ''
   }
 }
 
@@ -201,7 +245,9 @@ const submitGoal = () => {
     title: newGoal.value.title,
     description: newGoal.value.description,
     targetDate: newGoal.value.targetDate,
-    status: 'Not Started'
+    status: 'Not Started',
+    division: newGoal.value.division,
+    jobRole: newGoal.value.jobRole
   }
   
   goals.value.unshift(goal)
