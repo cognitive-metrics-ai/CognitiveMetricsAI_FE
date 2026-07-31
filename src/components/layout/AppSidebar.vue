@@ -231,14 +231,15 @@ const menuGroups = [
           { name: "Employee Review", path: "/performance/review-generator", pro: false },
           { name: "Team Directory", path: "/performance", pro: false },
           { name: "Team's Performance", path: "/performance", pro: false },
-          { name: "Division Performance", path: "/performance", pro: false },
           { name: "Define my Goals", path: "/performance", pro: false },
         ],
       },
       {
         icon: GridIcon,
         name: "Performance Center",
-        path: "/performance",
+        subItems: [
+          { name: "Division Performance", path: "/line-chart", pro: false },
+        ],
       },
     ],
   },
