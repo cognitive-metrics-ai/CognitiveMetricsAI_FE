@@ -347,13 +347,37 @@ const handleSubmit = async () => {
   }
 }
 
+const syncUserToBackend = async (firebaseUser: any, providerName: string) => {
+  try {
+    const payload = {
+      email: firebaseUser.email || `${firebaseUser.uid}@auth.local`,
+      full_name: firebaseUser.displayName || 'Enterprise User',
+      role: 'employee',
+      custom_metadata: {
+        auth_provider: providerName,
+        firebase_uid: firebaseUser.uid,
+        photo_url: firebaseUser.photoURL || '/images/user/user-icon.svg',
+      },
+    }
+    await fetch('http://localhost:8000/api/v1/users/sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+  } catch (err) {
+    console.warn('Backend DB user sync warning:', err)
+  }
+}
+
 const handleGoogleSignup = async () => {
   errorMsg.value = ''
   loading.value = true
   try {
     const provider = new GoogleAuthProvider()
-    await signInWithPopup(auth, provider)
-    // Optionally update profile or handle user info here
+    const result = await signInWithPopup(auth, provider)
+    if (result.user) {
+      await syncUserToBackend(result.user, 'google.com')
+    }
     router.push('/')
   } catch (error: unknown) {
     if (error instanceof Error) {

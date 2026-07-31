@@ -23,7 +23,7 @@ const signInWithGoogle = async () => {
       uid: profile.uid,
       displayName: profile.displayName,
       email: profile.email,
-      photoURL: profile.photoURL,
+      photoURL: profile.photoURL || '/images/user/user-icon.svg',
     }, { merge: true });
     router.push('/profile');
   } catch (error) {

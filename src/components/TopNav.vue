@@ -32,13 +32,13 @@ const toggleProfile = () => {
 	showProfile.value = !showProfile.value;
 };
 
-const userPhotoURL = ref('');
+const userPhotoURL = ref('/images/user/user-icon.svg');
 onMounted(() => {
 	onAuthStateChanged(auth, (user) => {
 		if (user && user.photoURL) {
 			userPhotoURL.value = user.photoURL;
 		} else {
-			userPhotoURL.value = '/images/user/owner.jpg';
+			userPhotoURL.value = '/images/user/user-icon.svg';
 		}
 	});
 });
