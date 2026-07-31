@@ -15,44 +15,50 @@
         </button>
       </div>
 
-      <!-- Goals Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" v-if="goals.length > 0">
+      <!-- Goals List -->
+      <div class="flex flex-col gap-4" v-if="goals.length > 0">
         <div
           v-for="goal in goals"
           :key="goal.id"
-          class="bg-white dark:bg-gray-800 p-5 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col justify-between"
+          class="bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all hover:shadow-md"
         >
-          <div>
-            <div class="flex justify-between items-start mb-3">
+          <div class="flex-1">
+            <div class="flex flex-wrap items-center gap-3 mb-2">
               <span
                 :class="[
-                  'px-2.5 py-0.5 text-xs font-semibold rounded-full',
-                  goal.isActive ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
+                  'px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full',
+                  goal.isActive ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'
                 ]"
               >
                 {{ goal.isActive ? 'Active Goal' : 'Not Active Goal' }}
               </span>
-              <span class="text-xs text-gray-400">{{ goal.term }}</span>
+              <span class="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                🗓️ {{ goal.term }}
+              </span>
+              
+              <div class="flex gap-2" v-if="goal.division || goal.jobRole">
+                <span v-if="goal.division" class="px-2 py-0.5 text-[10px] font-semibold bg-gray-50 border border-gray-200 text-gray-600 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 rounded">{{ goal.division }}</span>
+                <span v-if="goal.jobRole" class="px-2 py-0.5 text-[10px] font-semibold bg-indigo-50 border border-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:border-indigo-800 dark:text-indigo-400 rounded">{{ goal.jobRole }}</span>
+              </div>
             </div>
-            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">{{ goal.title }}</h3>
-            <div class="flex flex-wrap gap-2 mb-2" v-if="goal.division || goal.jobRole">
-              <span v-if="goal.division" class="px-2 py-0.5 text-[10px] font-semibold bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300 rounded shadow-sm">{{ goal.division }}</span>
-              <span v-if="goal.jobRole" class="px-2 py-0.5 text-[10px] font-semibold bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400 rounded shadow-sm">{{ goal.jobRole }}</span>
-            </div>
-            <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
+            
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">{{ goal.title }}</h3>
+            
+            <p class="text-sm text-gray-600 dark:text-gray-400">
               {{ goal.description }}
             </p>
           </div>
-          <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-end gap-3">
+          
+          <div class="flex md:flex-col justify-end items-end gap-2 shrink-0 border-t md:border-t-0 md:border-l border-gray-100 dark:border-gray-700 pt-4 md:pt-0 md:pl-5 mt-4 md:mt-0">
              <button
                 @click="toggleActive(goal.id)"
-                :class="['text-xs font-medium transition-colors', goal.isActive ? 'text-amber-500 hover:text-amber-600' : 'text-emerald-600 hover:text-emerald-700 dark:text-emerald-400']"
+                :class="['px-4 py-2 text-xs font-semibold rounded-lg transition-colors w-full md:w-32 text-center', goal.isActive ? 'bg-amber-50 text-amber-600 hover:bg-amber-100 dark:bg-amber-900/20 dark:hover:bg-amber-900/40' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40']"
              >
                {{ goal.isActive ? 'Not Active' : 'Active' }}
              </button>
              <button
                 @click="deleteGoal(goal.id)"
-                class="text-xs font-medium text-red-500 hover:text-red-600 transition-colors"
+                class="px-4 py-2 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 dark:text-red-400 dark:bg-red-900/20 dark:hover:bg-red-900/40 rounded-lg transition-colors w-full md:w-32 text-center"
              >
                Delete
              </button>
