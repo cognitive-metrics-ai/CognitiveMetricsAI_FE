@@ -76,6 +76,15 @@ const router = createRouter({
       },
     },
     {
+      path: '/performance/goals',
+      name: 'PerformanceGoals',
+      component: () => import('../views/Performance/Goals.vue'),
+      meta: {
+        title: 'Performance Goals',
+        requiresAuth: true,
+      },
+    },
+    {
       path: '/calendar',
       name: 'Calendar',
       component: () => import('../views/Others/Calendar.vue'),

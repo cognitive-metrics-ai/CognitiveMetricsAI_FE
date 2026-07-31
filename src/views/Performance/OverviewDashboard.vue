@@ -102,7 +102,7 @@
 
           <!-- Card 5: Define my Goals -->
           <router-link
-            to="/calendar"
+            to="/performance/goals"
             class="group bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/10 hover:border-rose-400/50 p-4 rounded-xl transition-all duration-200 flex flex-col justify-between shadow-lg"
           >
             <div>

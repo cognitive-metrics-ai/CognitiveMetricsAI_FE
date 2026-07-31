@@ -231,7 +231,7 @@ const menuGroups = [
           { name: "Employee Review", path: "/performance/review-generator", pro: false },
           { name: "Team Directory", path: "/performance", pro: false },
           { name: "Team's Performance", path: "/performance", pro: false },
-          { name: "Define my Goals", path: "/performance", pro: false },
+          { name: "Define my Goals", path: "/performance/goals", pro: false },
         ],
       },
       {
