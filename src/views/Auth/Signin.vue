@@ -281,6 +281,7 @@ import { useRouter } from 'vue-router'
 import FullScreenLayout from '@/components/layout/FullScreenLayout.vue'
 import { auth, googleProvider, facebookProvider, signInWithPopup } from '@/firebase.js'
 import { signInWithEmailAndPassword } from 'firebase/auth'
+import { extractPhotoURL } from '@/services/userService'
 
 const email = ref('')
 const password = ref('')
@@ -296,7 +297,7 @@ const togglePasswordVisibility = () => {
 
 const syncUserToBackend = async (firebaseUser: any, providerName: string) => {
   try {
-    const userPhoto = firebaseUser.photoURL || ''
+    const userPhoto = extractPhotoURL(firebaseUser)
     const payload = {
       email: firebaseUser.email || `${firebaseUser.uid}@auth.local`,
       full_name: firebaseUser.displayName || 'Enterprise User',

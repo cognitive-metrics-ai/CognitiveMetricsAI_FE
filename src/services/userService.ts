@@ -1,6 +1,19 @@
 import { auth } from '@/firebase.js'
 import { updateProfile as firebaseUpdateProfile } from 'firebase/auth'
 
+export const extractPhotoURL = (firebaseUser: any): string => {
+  if (!firebaseUser) return ''
+  if (firebaseUser.photoURL) return firebaseUser.photoURL
+  if (Array.isArray(firebaseUser.providerData)) {
+    for (const provider of firebaseUser.providerData) {
+      if (provider && provider.photoURL) {
+        return provider.photoURL
+      }
+    }
+  }
+  return ''
+}
+
 export interface UserProfileData {
   email: string
   full_name?: string

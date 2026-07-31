@@ -1,21 +1,124 @@
 <template>
   <admin-layout>
     <div class="space-y-6">
-      <!-- Header Banner -->
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-indigo-900 via-indigo-800 to-purple-900 text-white p-6 rounded-2xl shadow-lg border border-indigo-700/40">
-        <div>
-          <h1 class="text-2xl font-bold tracking-tight">Cognitive Metrics AI — Performance Center</h1>
-          <p class="text-indigo-200 text-sm mt-1">Real-time team focus index, cognitive workload balancing, and automated AI reviews.</p>
+      <!-- Welcome Greeting Banner & Quick Actions -->
+      <div class="bg-gradient-to-r from-gray-900 via-indigo-950 to-purple-950 text-white p-6 sm:p-8 rounded-2xl shadow-xl border border-indigo-500/20 relative overflow-hidden">
+        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="relative z-10">
+          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
+            Welcome <span class="bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400 bg-clip-text text-transparent">{{ userName }}</span>, what you like to do today?
+          </h1>
+          <p class="text-indigo-200/80 text-sm mt-2 max-w-2xl">
+            Choose a quick action below to review an employee, inspect team performance, explore company directories, or set goals.
+          </p>
         </div>
-        <div class="flex items-center gap-3">
+
+        <!-- Quick Action Link Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mt-6 relative z-10">
+          <!-- Card 1: Review an Employee -->
           <router-link
             to="/performance/review-generator"
-            class="inline-flex items-center gap-2 bg-purple-500 hover:bg-purple-600 text-white text-sm font-medium px-4 py-2.5 rounded-xl shadow transition duration-200"
+            class="group bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/10 hover:border-purple-400/50 p-4 rounded-xl transition-all duration-200 flex flex-col justify-between shadow-lg"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-            </svg>
-            AI Review Generator
+            <div>
+              <div class="w-10 h-10 rounded-lg bg-purple-500/20 text-purple-300 flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition-transform">
+                📝
+              </div>
+              <h3 class="font-bold text-sm text-white group-hover:text-purple-300 transition-colors">
+                Review an Employee
+              </h3>
+              <p class="text-xs text-indigo-200/70 mt-1">
+                Generate AI performance reviews
+              </p>
+            </div>
+            <div class="mt-4 flex items-center text-xs font-semibold text-purple-300 group-hover:translate-x-1 transition-transform">
+              Start review →
+            </div>
+          </router-link>
+
+          <!-- Card 2: See my Team Directory -->
+          <router-link
+            to="/basic-tables"
+            class="group bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/10 hover:border-blue-400/50 p-4 rounded-xl transition-all duration-200 flex flex-col justify-between shadow-lg"
+          >
+            <div>
+              <div class="w-10 h-10 rounded-lg bg-blue-500/20 text-blue-300 flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition-transform">
+                👥
+              </div>
+              <h3 class="font-bold text-sm text-white group-hover:text-blue-300 transition-colors">
+                See my Team Directory
+              </h3>
+              <p class="text-xs text-indigo-200/70 mt-1">
+                View members & roles
+              </p>
+            </div>
+            <div class="mt-4 flex items-center text-xs font-semibold text-blue-300 group-hover:translate-x-1 transition-transform">
+              View directory →
+            </div>
+          </router-link>
+
+          <!-- Card 3: See my Team's Performance -->
+          <button
+            type="button"
+            @click="scrollToSection('team-metrics')"
+            class="group text-left bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/10 hover:border-amber-400/50 p-4 rounded-xl transition-all duration-200 flex flex-col justify-between shadow-lg cursor-pointer"
+          >
+            <div>
+              <div class="w-10 h-10 rounded-lg bg-amber-500/20 text-amber-300 flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition-transform">
+                ⚡
+              </div>
+              <h3 class="font-bold text-sm text-white group-hover:text-amber-300 transition-colors">
+                See my Team's Performance
+              </h3>
+              <p class="text-xs text-indigo-200/70 mt-1">
+                Live focus & cognitive metrics
+              </p>
+            </div>
+            <div class="mt-4 flex items-center text-xs font-semibold text-amber-300 group-hover:translate-x-1 transition-transform">
+              View metrics ↓
+            </div>
+          </button>
+
+          <!-- Card 4: See the Division's Performance -->
+          <router-link
+            to="/line-chart"
+            class="group bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/10 hover:border-emerald-400/50 p-4 rounded-xl transition-all duration-200 flex flex-col justify-between shadow-lg"
+          >
+            <div>
+              <div class="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-300 flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition-transform">
+                📊
+              </div>
+              <h3 class="font-bold text-sm text-white group-hover:text-emerald-300 transition-colors">
+                See Division Performance
+              </h3>
+              <p class="text-xs text-indigo-200/70 mt-1">
+                High-level productivity analytics
+              </p>
+            </div>
+            <div class="mt-4 flex items-center text-xs font-semibold text-emerald-300 group-hover:translate-x-1 transition-transform">
+              View analytics →
+            </div>
+          </router-link>
+
+          <!-- Card 5: Define my Goals -->
+          <router-link
+            to="/calendar"
+            class="group bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/10 hover:border-rose-400/50 p-4 rounded-xl transition-all duration-200 flex flex-col justify-between shadow-lg"
+          >
+            <div>
+              <div class="w-10 h-10 rounded-lg bg-rose-500/20 text-rose-300 flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition-transform">
+                🎯
+              </div>
+              <h3 class="font-bold text-sm text-white group-hover:text-rose-300 transition-colors">
+                Define my Goals
+              </h3>
+              <p class="text-xs text-indigo-200/70 mt-1">
+                Set OKRs & project milestones
+              </p>
+            </div>
+            <div class="mt-4 flex items-center text-xs font-semibold text-rose-300 group-hover:translate-x-1 transition-transform">
+              Manage goals →
+            </div>
           </router-link>
         </div>
       </div>
@@ -118,7 +221,7 @@
       </div>
 
       <!-- Filters & Team Performance Table/Cards -->
-      <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+      <div id="team-metrics" class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div>
             <h2 class="text-lg font-bold text-gray-900 dark:text-white">Team Cognitive Metrics</h2>
@@ -240,13 +343,42 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import AdminLayout from '../../components/layout/AdminLayout.vue'
 import { usePerformanceStore } from '../../stores/performanceStore'
+import { auth } from '@/firebase.js'
+import { onAuthStateChanged } from 'firebase/auth'
+import { UserService } from '@/services/userService'
 
 const performanceStore = usePerformanceStore()
+const userName = ref('User')
+
+const scrollToSection = (id: string) => {
+  const el = document.getElementById(id)
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth' })
+  }
+}
 
 onMounted(() => {
   performanceStore.fetchBackendData()
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      if (user.displayName) {
+        userName.value = user.displayName.split(' ')[0]
+      } else if (user.email) {
+        userName.value = user.email.split('@')[0]
+      }
+      if (user.email) {
+        try {
+          const profile = await UserService.fetchUserProfile(user.email)
+          if (profile && profile.first_name) {
+            userName.value = profile.first_name
+          }
+        } catch (e) {}
+      }
+    }
+  })
 })
 </script>
