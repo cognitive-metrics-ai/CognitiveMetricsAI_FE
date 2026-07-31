@@ -165,22 +165,6 @@
                           {{ subItem.name }}
                           <span class="flex items-center gap-1 ml-auto">
                             <span
-                              v-if="subItem"
-                              :class="[
-                                'menu-dropdown-badge',
-                                {
-                                  'menu-dropdown-badge-active': isActive(
-                                    subItem.path
-                                  ),
-                                  'menu-dropdown-badge-inactive': !isActive(
-                                    subItem.path
-                                  ),
-                                },
-                              ]"
-                            >
-                              new
-                            </span>
-                            <span
                               v-if="subItem.pro"
                               :class="[
                                 'menu-dropdown-badge',
