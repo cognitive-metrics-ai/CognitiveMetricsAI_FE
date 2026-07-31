@@ -108,12 +108,13 @@
             </div>
             
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Target Date</label>
-              <input
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Goal Until Date</label>
+              <flat-pickr
                 v-model="newGoal.targetDate"
-                type="date"
-                required
+                :config="flatpickrConfig"
                 class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                placeholder="Select date"
+                required
               />
             </div>
 
@@ -142,6 +143,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
+import flatPickr from 'vue-flatpickr-component'
+import 'flatpickr/dist/flatpickr.css'
 
 interface Goal {
   id: number
@@ -176,6 +179,12 @@ const newGoal = ref({
   description: '',
   targetDate: ''
 })
+
+const flatpickrConfig = {
+  dateFormat: 'Y-m-d',
+  altInput: true,
+  altFormat: 'F j, Y',
+}
 
 const closeModal = () => {
   showAddModal.value = false
