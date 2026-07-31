@@ -296,14 +296,16 @@ const togglePasswordVisibility = () => {
 
 const syncUserToBackend = async (firebaseUser: any, providerName: string) => {
   try {
+    const userPhoto = firebaseUser.photoURL || ''
     const payload = {
       email: firebaseUser.email || `${firebaseUser.uid}@auth.local`,
       full_name: firebaseUser.displayName || 'Enterprise User',
       role: 'employee',
+      photo_url: userPhoto,
       custom_metadata: {
         auth_provider: providerName,
         firebase_uid: firebaseUser.uid,
-        photo_url: firebaseUser.photoURL || '/images/user/user-icon.svg',
+        photo_url: userPhoto,
       },
     }
     await fetch('http://localhost:8000/api/v1/users/sync', {
