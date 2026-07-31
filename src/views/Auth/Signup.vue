@@ -285,8 +285,8 @@
             <common-grid-shape />
             <div class="flex flex-col items-center max-w-xs">
               <router-link to="/" class="block mb-4">
-                <img class="dark:hidden h-12 w-auto" src="/images/logo/logo_light.png" alt="Logo" />
-                <img class="hidden dark:block h-12 w-auto" src="/images/logo/logo_dark.png" alt="Logo" />
+                <img class="dark:hidden h-16 w-auto" src="/images/logo/logo_light.png" alt="Logo" />
+                <img class="hidden dark:block h-16 w-auto" src="/images/logo/logo_dark.png" alt="Logo" />
               </router-link>
               <p class="text-center text-gray-400 dark:text-white/60">
                 Free and Open-Source Tailwind CSS Admin Dashboard Template

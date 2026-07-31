@@ -58,6 +58,15 @@ const router = createRouter({
       },
     },
     {
+      path: '/performance/team-directory',
+      name: 'TeamDirectory',
+      component: () => import('../views/Performance/TeamDirectory.vue'),
+      meta: {
+        title: 'Team Directory',
+        requiresAuth: true,
+      },
+    },
+    {
       path: '/performance/employees/:id',
       name: 'EmployeeDetail',
       component: () => import('../views/Performance/EmployeeDetail.vue'),
@@ -72,6 +81,15 @@ const router = createRouter({
       component: () => import('../views/Performance/ReviewGenerator.vue'),
       meta: {
         title: 'AI Review Generator',
+        requiresAuth: true,
+      },
+    },
+    {
+      path: '/performance/goals',
+      name: 'PerformanceGoals',
+      component: () => import('../views/Performance/Goals.vue'),
+      meta: {
+        title: 'Performance Goals',
         requiresAuth: true,
       },
     },

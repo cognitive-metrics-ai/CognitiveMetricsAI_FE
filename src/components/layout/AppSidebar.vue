@@ -22,12 +22,12 @@
       <router-link to="/" class="flex items-center">
         <template v-if="isExpanded || isHovered || isMobileOpen">
           <img
-            class="dark:hidden h-10 w-auto max-w-[200px] object-contain"
+            class="dark:hidden h-16 w-auto max-w-[250px] object-contain"
             src="/images/logo/logo_light.png"
             alt="Logo"
           />
           <img
-            class="hidden dark:block h-10 w-auto max-w-[200px] object-contain"
+            class="hidden dark:block h-16 w-auto max-w-[250px] object-contain"
             src="/images/logo/logo_dark.png"
             alt="Logo"
           />
@@ -165,22 +165,6 @@
                           {{ subItem.name }}
                           <span class="flex items-center gap-1 ml-auto">
                             <span
-                              v-if="subItem"
-                              :class="[
-                                'menu-dropdown-badge',
-                                {
-                                  'menu-dropdown-badge-active': isActive(
-                                    subItem.path
-                                  ),
-                                  'menu-dropdown-badge-inactive': !isActive(
-                                    subItem.path
-                                  ),
-                                },
-                              ]"
-                            >
-                              new
-                            </span>
-                            <span
                               v-if="subItem.pro"
                               :class="[
                                 'menu-dropdown-badge',
@@ -245,26 +229,17 @@ const menuGroups = [
         name: "Dashboard",
         subItems: [
           { name: "Employee Review", path: "/performance/review-generator", pro: false },
-          { name: "Team Directory", path: "/performance", pro: false },
+          { name: "Team Directory", path: "/performance/team-directory", pro: false },
           { name: "Team's Performance", path: "/performance", pro: false },
-          { name: "Division Performance", path: "/performance", pro: false },
-          { name: "Define my Goals", path: "/performance", pro: false },
+          { name: "Define my Goals", path: "/performance/goals", pro: false },
         ],
       },
       {
         icon: GridIcon,
         name: "Performance Center",
-        path: "/performance",
-      },
-      {
-        icon: PieChartIcon,
-        name: "AI Review Generator",
-        path: "/performance/review-generator",
-      },
-      {
-        icon: UserCircleIcon,
-        name: "Team Directory",
-        path: "/performance",
+        subItems: [
+          { name: "Division Performance", path: "/line-chart", pro: false },
+        ],
       },
     ],
   },
