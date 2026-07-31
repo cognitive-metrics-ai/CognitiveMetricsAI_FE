@@ -7,18 +7,44 @@
           <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Performance Goals</h1>
           <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Manage and track your employee review goals</p>
         </div>
-        <button
-          @click="showAddModal = true"
-          class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-md transition-colors flex items-center gap-2"
-        >
-          <span class="text-lg">+</span> Add Goal
-        </button>
+        <div class="flex flex-col sm:flex-row gap-3 items-center">
+          <select
+            v-model="filterTerm"
+            class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+          >
+            <option value="All">All Quarters</option>
+            <option value="Q1 2026">Q1 2026</option>
+            <option value="Q2 2026">Q2 2026</option>
+            <option value="Q3 2026">Q3 2026</option>
+            <option value="Q4 2026">Q4 2026</option>
+            <option value="Q1 2027">Q1 2027</option>
+            <option value="Q2 2027">Q2 2027</option>
+            <option value="Q3 2027">Q3 2027</option>
+            <option value="Q4 2027">Q4 2027</option>
+          </select>
+
+          <select
+            v-model="filterStatus"
+            class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+          >
+            <option value="All">All Statuses</option>
+            <option value="Active">Active</option>
+            <option value="Not Active">Not Active</option>
+          </select>
+
+          <button
+            @click="showAddModal = true"
+            class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-md transition-colors flex items-center gap-2"
+          >
+            <span class="text-lg">+</span> Add Goal
+          </button>
+        </div>
       </div>
 
       <!-- Goals List -->
-      <div class="flex flex-col gap-4" v-if="goals.length > 0">
+      <div class="flex flex-col gap-4" v-if="filteredGoals.length > 0">
         <div
-          v-for="goal in goals"
+          v-for="goal in filteredGoals"
           :key="goal.id"
           class="bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all hover:shadow-md"
         >
@@ -186,7 +212,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
 
 interface Goal {
@@ -220,6 +246,30 @@ const goals = ref<Goal[]>([
     jobRole: 'Frontend Developer'
   }
 ])
+
+const getCurrentQuarter = () => {
+  const date = new Date()
+  const month = date.getMonth()
+  const year = date.getFullYear()
+  const quarter = Math.floor(month / 3) + 1
+  return `Q${quarter} ${year}`
+}
+
+const filterTerm = ref(getCurrentQuarter())
+const filterStatus = ref('Active')
+
+const filteredGoals = computed(() => {
+  return goals.value.filter(goal => {
+    const matchTerm = filterTerm.value === 'All' || goal.term === filterTerm.value
+    let matchStatus = true
+    if (filterStatus.value === 'Active') {
+      matchStatus = goal.isActive === true
+    } else if (filterStatus.value === 'Not Active') {
+      matchStatus = goal.isActive === false
+    }
+    return matchTerm && matchStatus
+  })
+})
 
 const showAddModal = ref(false)
 
