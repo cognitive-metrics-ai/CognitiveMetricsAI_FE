@@ -34,7 +34,7 @@
               >
                 {{ goal.status }}
               </span>
-              <span class="text-xs text-gray-400">{{ goal.targetDate }}</span>
+              <span class="text-xs text-gray-400">{{ goal.term }}</span>
             </div>
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">{{ goal.title }}</h3>
             <div class="flex flex-wrap gap-2 mb-2" v-if="goal.division || goal.jobRole">
@@ -142,14 +142,22 @@
             </div>
             
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Goal Until Date</label>
-              <flat-pickr
-                v-model="newGoal.targetDate"
-                :config="flatpickrConfig"
-                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                placeholder="Select date"
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Goal Term</label>
+              <select
+                v-model="newGoal.term"
                 required
-              />
+                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+              >
+                <option value="" disabled>Select quarter</option>
+                <option value="Q1 2026">Q1 2026</option>
+                <option value="Q2 2026">Q2 2026</option>
+                <option value="Q3 2026">Q3 2026</option>
+                <option value="Q4 2026">Q4 2026</option>
+                <option value="Q1 2027">Q1 2027</option>
+                <option value="Q2 2027">Q2 2027</option>
+                <option value="Q3 2027">Q3 2027</option>
+                <option value="Q4 2027">Q4 2027</option>
+              </select>
             </div>
 
             <div class="pt-4 flex gap-3 justify-end">
@@ -177,14 +185,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
-import flatPickr from 'vue-flatpickr-component'
-import 'flatpickr/dist/flatpickr.css'
 
 interface Goal {
   id: number
   title: string
   description: string
-  targetDate: string
+  term: string
   status: 'Not Started' | 'In Progress' | 'Completed'
   division?: string
   jobRole?: string
@@ -196,7 +202,7 @@ const goals = ref<Goal[]>([
     id: 1,
     title: 'Complete Q3 Reviews',
     description: 'Use the AI Review Generator to finalize Q3 performance reviews for the UX design team.',
-    targetDate: '2026-08-15',
+    term: 'Q3 2026',
     status: 'In Progress',
     division: 'Product & UX',
     jobRole: 'UX Designer'
@@ -205,7 +211,7 @@ const goals = ref<Goal[]>([
     id: 2,
     title: 'Assess Engineering Focus Index',
     description: 'Review the cognitive workload and focus index metrics for the frontend engineering division.',
-    targetDate: '2026-08-20',
+    term: 'Q3 2026',
     status: 'Not Started',
     division: 'Engineering',
     jobRole: 'Frontend Developer'
@@ -217,23 +223,17 @@ const showAddModal = ref(false)
 const newGoal = ref({
   title: '',
   description: '',
-  targetDate: '',
+  term: '',
   division: '',
   jobRole: ''
 })
-
-const flatpickrConfig = {
-  dateFormat: 'Y-m-d',
-  altInput: true,
-  altFormat: 'F j, Y',
-}
 
 const closeModal = () => {
   showAddModal.value = false
   newGoal.value = {
     title: '',
     description: '',
-    targetDate: '',
+    term: '',
     division: '',
     jobRole: ''
   }
@@ -244,7 +244,7 @@ const submitGoal = () => {
     id: Date.now(),
     title: newGoal.value.title,
     description: newGoal.value.description,
-    targetDate: newGoal.value.targetDate,
+    term: newGoal.value.term,
     status: 'Not Started',
     division: newGoal.value.division,
     jobRole: newGoal.value.jobRole
