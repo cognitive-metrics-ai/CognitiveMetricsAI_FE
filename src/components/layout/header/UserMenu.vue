@@ -7,7 +7,13 @@
         @click.prevent="toggleDropdown"
       >
         <span class="mr-3 overflow-hidden rounded-full h-10 w-10 border border-gray-200 dark:border-gray-700 shadow-sm flex-shrink-0">
-          <img :src="userPhotoURL" alt="User" class="w-full h-full object-cover" />
+          <img
+            :src="userPhotoURL"
+            alt="User"
+            class="w-full h-full object-cover"
+            referrerpolicy="no-referrer"
+            @error="(e) => { const el = e.target as HTMLImageElement; if (el) el.src = '/images/user/user-icon.svg'; }"
+          />
         </span>
 
         <span class="hidden sm:block mr-1 font-medium text-theme-sm text-gray-800 dark:text-white/90">{{ displayName }}</span>
@@ -69,15 +75,16 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { UserCircleIcon, ChevronDownIcon, LogoutIcon, SettingsIcon, InfoCircleIcon } from '@/icons'
 import { auth, signOut } from '@/firebase.js'
 import { onAuthStateChanged } from 'firebase/auth'
+import { extractPhotoURL } from '@/services/userService'
 
 const dropdownOpen = ref(false)
-const dropdownRef = ref(null)
+const dropdownRef = ref<HTMLDivElement | null>(null)
 const isAuthenticated = ref(false)
 const displayName = ref('')
 const email = ref('')
@@ -109,8 +116,8 @@ const handleSignOut = async () => {
   }
 }
 
-const handleClickOutside = (event) => {
-  if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
+const handleClickOutside = (event: MouseEvent) => {
+  if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
     closeDropdown()
   }
 }
@@ -123,7 +130,8 @@ onMounted(() => {
       isAuthenticated.value = true
       displayName.value = user.displayName || user.email?.split('@')[0] || 'User'
       email.value = user.email || ''
-      userPhotoURL.value = user.photoURL || '/images/user/user-icon.svg'
+      const photo = extractPhotoURL(user)
+      userPhotoURL.value = photo || '/images/user/user-icon.svg'
     } else {
       isAuthenticated.value = false
       displayName.value = ''
