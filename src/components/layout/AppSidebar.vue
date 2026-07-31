@@ -240,16 +240,6 @@ const menuGroups = [
         name: "Performance Center",
         path: "/performance",
       },
-      {
-        icon: PieChartIcon,
-        name: "AI Review Generator",
-        path: "/performance/review-generator",
-      },
-      {
-        icon: UserCircleIcon,
-        name: "Team Directory",
-        path: "/performance",
-      },
     ],
   },
   {
