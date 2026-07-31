@@ -244,10 +244,11 @@ const menuGroups = [
         icon: GridIcon,
         name: "Dashboard",
         subItems: [
-          { name: "Overview", path: "/", pro: false },
-          { name: "Performance Center", path: "/performance", pro: false },
-          { name: "AI Review Generator", path: "/performance/review-generator", pro: false },
+          { name: "Employee Review", path: "/performance/review-generator", pro: false },
           { name: "Team Directory", path: "/performance", pro: false },
+          { name: "Team's Performance", path: "/performance", pro: false },
+          { name: "Division Performance", path: "/performance", pro: false },
+          { name: "Define my Goals", path: "/performance", pro: false },
         ],
       },
       {
