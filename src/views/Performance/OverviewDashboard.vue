@@ -38,7 +38,7 @@
 
           <!-- Card 2: See my Team Directory -->
           <router-link
-            to="/basic-tables"
+            to="/performance/team-directory"
             class="group bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/10 hover:border-blue-400/50 p-4 rounded-xl transition-all duration-200 flex flex-col justify-between shadow-lg"
           >
             <div>

@@ -58,6 +58,15 @@ const router = createRouter({
       },
     },
     {
+      path: '/performance/team-directory',
+      name: 'TeamDirectory',
+      component: () => import('../views/Performance/TeamDirectory.vue'),
+      meta: {
+        title: 'Team Directory',
+        requiresAuth: true,
+      },
+    },
+    {
       path: '/performance/employees/:id',
       name: 'EmployeeDetail',
       component: () => import('../views/Performance/EmployeeDetail.vue'),
