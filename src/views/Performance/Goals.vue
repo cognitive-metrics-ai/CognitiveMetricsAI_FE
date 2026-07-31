@@ -27,12 +27,10 @@
               <span
                 :class="[
                   'px-2.5 py-0.5 text-xs font-semibold rounded-full',
-                  goal.status === 'Completed' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' :
-                  goal.status === 'In Progress' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
-                  'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
+                  goal.isActive ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
                 ]"
               >
-                {{ goal.status }}
+                {{ goal.isActive ? 'Active Goal' : 'Not Active Goal' }}
               </span>
               <span class="text-xs text-gray-400">{{ goal.term }}</span>
             </div>
@@ -47,11 +45,10 @@
           </div>
           <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-end gap-3">
              <button
-                v-if="goal.status !== 'Completed'"
-                @click="markCompleted(goal.id)"
-                class="text-xs font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 transition-colors"
+                @click="toggleActive(goal.id)"
+                :class="['text-xs font-medium transition-colors', goal.isActive ? 'text-amber-500 hover:text-amber-600' : 'text-emerald-600 hover:text-emerald-700 dark:text-emerald-400']"
              >
-               Mark Complete
+               {{ goal.isActive ? 'Not Active' : 'Active' }}
              </button>
              <button
                 @click="deleteGoal(goal.id)"
@@ -191,7 +188,7 @@ interface Goal {
   title: string
   description: string
   term: string
-  status: 'Not Started' | 'In Progress' | 'Completed'
+  isActive: boolean
   division?: string
   jobRole?: string
 }
@@ -203,7 +200,7 @@ const goals = ref<Goal[]>([
     title: 'Complete Q3 Reviews',
     description: 'Use the AI Review Generator to finalize Q3 performance reviews for the UX design team.',
     term: 'Q3 2026',
-    status: 'In Progress',
+    isActive: true,
     division: 'Product & UX',
     jobRole: 'UX Designer'
   },
@@ -212,7 +209,7 @@ const goals = ref<Goal[]>([
     title: 'Assess Engineering Focus Index',
     description: 'Review the cognitive workload and focus index metrics for the frontend engineering division.',
     term: 'Q3 2026',
-    status: 'Not Started',
+    isActive: false,
     division: 'Engineering',
     jobRole: 'Frontend Developer'
   }
@@ -245,7 +242,7 @@ const submitGoal = () => {
     title: newGoal.value.title,
     description: newGoal.value.description,
     term: newGoal.value.term,
-    status: 'Not Started',
+    isActive: true,
     division: newGoal.value.division,
     jobRole: newGoal.value.jobRole
   }
@@ -258,10 +255,10 @@ const deleteGoal = (id: number) => {
   goals.value = goals.value.filter(g => g.id !== id)
 }
 
-const markCompleted = (id: number) => {
+const toggleActive = (id: number) => {
   const goal = goals.value.find(g => g.id === id)
   if (goal) {
-    goal.status = 'Completed'
+    goal.isActive = !goal.isActive
   }
 }
 </script>
