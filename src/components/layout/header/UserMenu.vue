@@ -81,7 +81,7 @@ const dropdownRef = ref(null)
 const isAuthenticated = ref(false)
 const displayName = ref('')
 const email = ref('')
-const userPhotoURL = ref('/images/user/owner.jpg')
+const userPhotoURL = ref('/images/user/user-icon.svg')
 
 const router = useRouter()
 
@@ -123,12 +123,12 @@ onMounted(() => {
       isAuthenticated.value = true
       displayName.value = user.displayName || user.email?.split('@')[0] || 'User'
       email.value = user.email || ''
-      userPhotoURL.value = user.photoURL || '/images/user/owner.jpg'
+      userPhotoURL.value = user.photoURL || '/images/user/user-icon.svg'
     } else {
       isAuthenticated.value = false
       displayName.value = ''
       email.value = ''
-      userPhotoURL.value = '/images/user/owner.jpg'
+      userPhotoURL.value = '/images/user/user-icon.svg'
     }
   })
 })

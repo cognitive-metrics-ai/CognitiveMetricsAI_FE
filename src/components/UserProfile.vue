@@ -4,7 +4,7 @@
       <button @click="signInWithGoogle" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Sign in with Google</button>
     </div>
     <div v-else class="flex flex-col items-center">
-      <img :src="user.photoURL" alt="User" class="w-16 h-16 rounded-full mb-2" v-if="user.photoURL" />
+      <img :src="user.photoURL || '/images/user/user-icon.svg'" alt="User" class="w-16 h-16 rounded-full mb-2" />
       <div class="font-bold text-lg">{{ user.displayName }}</div>
       <div class="text-gray-600">{{ user.email }}</div>
       <button @click="signOutUser" class="mt-4 px-4 py-2 bg-gray-300 rounded-lg">Sign Out</button>

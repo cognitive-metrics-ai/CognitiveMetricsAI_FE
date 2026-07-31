@@ -303,7 +303,7 @@ const syncUserToBackend = async (firebaseUser: any, providerName: string) => {
       custom_metadata: {
         auth_provider: providerName,
         firebase_uid: firebaseUser.uid,
-        photo_url: firebaseUser.photoURL || '',
+        photo_url: firebaseUser.photoURL || '/images/user/user-icon.svg',
       },
     }
     await fetch('http://localhost:8000/api/v1/users/sync', {
