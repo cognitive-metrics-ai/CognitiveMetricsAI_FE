@@ -22,12 +22,12 @@
       <router-link to="/" class="flex items-center">
         <template v-if="isExpanded || isHovered || isMobileOpen">
           <img
-            class="dark:hidden h-10 w-auto max-w-[200px] object-contain"
+            class="dark:hidden h-16 w-auto max-w-[250px] object-contain"
             src="/images/logo/logo_light.png"
             alt="Logo"
           />
           <img
-            class="hidden dark:block h-10 w-auto max-w-[200px] object-contain"
+            class="hidden dark:block h-16 w-auto max-w-[250px] object-contain"
             src="/images/logo/logo_dark.png"
             alt="Logo"
           />
